@@ -17,7 +17,7 @@ These user stories are selected to illustrate interaction with both physical dev
 
 ## Gross Architecture
 
-A complete _Tile_ system consists of four types of components.
+A complete _Tilde_ system consists of four types of components.
 
 - **Core:** The system has a single _core_ which provides interfaces for the other components, and basic functionality such an automation engine and data storage.
 - **Devices:** _Devices_ can be connected items in the home such as light switches, thermostats, and door sensors. _Devices_ can also be entities on the internet such as a weather report for a certain location or a Twitter feed. 
