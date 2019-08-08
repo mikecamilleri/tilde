@@ -1,6 +1,6 @@
 # General Requirements and Architecture
 
-_Tilde_ is an extensible, multi-purpose, automation platform with a focus on automating the home. At a very high level, such a platform must be able to ingest data both from connected devices and internet sources, and send commands to connected devices that cause their state to change (e.g. light switch on/off).
+_Tilde_ is a modular, extensible, multi-purpose, automation platform with a focus on automating the home. At a very high level, such a platform must be able to ingest data both from connected devices and internet sources, and send commands to connected devices that cause their state to change (e.g. light switch on/off).
 
 ## User Stories
 
