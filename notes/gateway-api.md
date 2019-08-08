@@ -1,6 +1,6 @@
 # Gateway API
 
-The Gateway API is a WebSocket/JSON APIT. The Gateway API server is implemented in the _core_ and connected to by clients implemented in `gateways`. 
+The Gateway API is a WebSocket/JSON API. The Gateway API server is implemented in the _core_ and connected to by clients implemented in _gateways_. 
 
 ## Initial Connection and Registration
 

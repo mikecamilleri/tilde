@@ -52,7 +52,7 @@ Additionally, the history of device state should be stored in a database. This w
 
 ### External Interfaces
 
-The _core_ has two interfaces: the Gateway API and the User API. The User API will be a RESTful JSON/HTTP API and will allow for the configuration and control of the _core_, _gateways_, and _devices_. The User API should be the only way the users need to interact with the system. The Gateway API will likely be connection oriented and the protocol designed to be as easy to implement as possible. A major goal of its design is to allow _gateways_ to be implemented easily. One possibility that is being considered is JSON/HTTP-WebSocket with the _core_ being the server, and _gateways_ being the clients. 
+The _core_ has two interfaces: the Gateway API and the User API. The User API will be a RESTful JSON/HTTP API and will allow for the configuration and control of the _core_, _gateways_, and _devices_. The User API should be the only way the users need to interact with the system. The Gateway API will likely be connection oriented and the protocol designed to be as easy to implement as possible. A major goal of its design is to allow _gateways_ to be implemented easily. One possibility that is being considered is JSON/WebSocket with the _core_ being the server, and _gateways_ being the clients. 
 
 ### Internal Devices
 
