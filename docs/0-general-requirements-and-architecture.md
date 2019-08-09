@@ -32,7 +32,7 @@ A complete _Tilde_ system consists of four types of components.
 
 - **Core:** The system has a single _core_ which provides interfaces for the other components, and basic functionality such an automation engine and data storage.
 - **Devices:** _Devices_ can be connected physical objects such as light switches, thermostats, and door sensors. _Devices_ can also be entities on the internet such as a weather report for a certain location or a Twitter feed. 
-- **Gateways:** _Gateways_ connect to both the _core_ and _devices_ and act as an intermediary between them. _Gateways_ will typically implement a single IoT protocol such as Z-Wave, or interact with one or several closely related web services.
+- **Gateways:** _Gateways_ connect to both the _core_ and _devices_ and act as an intermediary between them. _Gateways_ will typically implement a single IoT protocol such as Z-Wave, or interact with one or several closely related web services. _Gateways_ are software and may exist on th same device as the core or their own device.
 - **User Interfaces:** The core will provide an API to which several _user interfaces_ may connect.
 
 ## Core Architecture

@@ -6,4 +6,4 @@ This repository is currently just a collection of notes from various iterations 
 
 ## Design Documents
 
-- [General Requirements and Architecture](https://github.com/mikecamilleri/tilde/blob/master/notes/requirements-and-architecture.md)
+- Find them [here](https://github.com/mikecamilleri/tilde/tree/master/docs/).
