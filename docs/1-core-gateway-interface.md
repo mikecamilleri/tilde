@@ -60,11 +60,11 @@ _Gateways_ are responsible for initiating and mantaining a WebSocket connection 
 
 All communications between the _core_ and a _gateway_ fit the following template:
 
-```
+```json
 {
-    gateways: [],
-    devices: [],
-    errors: []
+    "gateways": [],
+    "devices": [],
+    "errors": []
 }
 ```
 
@@ -76,7 +76,7 @@ It may seem odd that `gateways` holds an array. This is done monstly for consist
 
 The `gateways` array contains objects in the following format:
 
-```
+```json
 {
     "hardwareId": "a-serial-number-or-similar",
     "id": "a-universally-unique-id-self-assigned-by-the-gateway",
@@ -93,7 +93,7 @@ Before a _gateway_ disconnects from the core, if possible, it is polite for it t
 
 The `devices` array contains objects in the following format:
 
-```
+```json
 {
     "hardwareId": "a-serial-number-or-similar",
     "gatewayId": "the-id-of-the-gateway-this-device-is-connected-to",
@@ -108,11 +108,11 @@ The `devices` array contains objects in the following format:
 
 `gateways` and `devices` have `features`.
 
-```
+```json
 {
     "id": "a-unique-id-within-the-device",
     "name": "A Friendly Name",
-    "description": "A friendly decription of what this feature does."",
+    "description": "A friendly decription of what this feature does.",
     "definition": {
         "standard": "the-name-of-the-standard-feature-type",
         "unit": "",
@@ -131,7 +131,7 @@ The `devices` array contains objects in the following format:
 
 The above template represents a standardized _feature_, if the _feature_ were a custom feature, the `definition` object would contain:
 
-```
+```json
     "definition": {
         "standard": "custom",
         "name": "A Friendly Name for the Feature Type",
@@ -140,7 +140,7 @@ The above template represents a standardized _feature_, if the _feature_ were a 
         "jsonType": "",
         "min": ,
         "max": ,
-        "options": [""]
+        "options": [""],
         "settable": true
     }
 ```
@@ -158,9 +158,10 @@ A few quick notes:
 
 Below are some example hypothetical `device` objects:
 
-```
+```json
 {
     "devices": [
+        {
             "hardwareId": "a-serial-number-or-similar",
             "gatewayId": "the-id-of-the-gateway-this-device-is-connected-to",
             "id": "a-unique-id-within-the-gateway",
@@ -179,7 +180,7 @@ Below are some example hypothetical `device` objects:
                             "value": "on",
                             "time": "2019-04-22T21:03:49+00:00"
                         }
-                    ]
+                    ],
                     "setting": {
                         "value": "on"
                     }
@@ -231,7 +232,7 @@ Below are some example hypothetical `device` objects:
                     "description": "",
                     "definiton": {
                         "standard": "thermostat-mode"
-                    }
+                    },
                     "readings": [
                         {
                             "value": "auto",
@@ -260,7 +261,7 @@ Below are some example hypothetical `device` objects:
                         "jsonType": "string",
                         "options": ["flash", "fade", "wave"],
                         "settable": true
-                    }
+                    },
                     "readings": [
                         {
                             "value": "flash",
@@ -281,7 +282,7 @@ Below are some example hypothetical `device` objects:
                         "min": 0,
                         "max": 9,
                         "settable": true
-                    }
+                    },
                     "readings": [
                         {
                             "value": 5,
