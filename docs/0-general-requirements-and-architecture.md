@@ -26,7 +26,7 @@ These home automation focused user stories are selected to illustrate interactio
 
 ## Gross Architecture
 
-![architecture diagram](https://raw.githubusercontent.com/mikecamilleri/tilde/master/notes/architecture.png)
+![architecture diagram](https://raw.githubusercontent.com/mikecamilleri/tilde/master/docs/architecture.png)
 
 A complete _Tilde_ system consists of four types of components.
 
