@@ -1,5 +1,7 @@
 # Gateway API
 
+_NOTE: This information is out of data and needs to be updated!_
+
 The Gateway API is a JSON/WebSocket API. The Gateway API server is implemented in the _core_ and connected to by Gateway API clients implemented in _gateways_. This API is designed such that Gateways can have a very minimal user interface. At a minimum they need to be able to connect to the network (Ethernet or WiFi) and have a way for the user to initiate discovery (a single push-button would be sufficient).
 
 ## Versioning
