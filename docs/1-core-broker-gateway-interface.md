@@ -1,8 +1,4 @@
-# Gateway API
-
-_NOTE: This information is out of data and needs to be updated!_
-
-The Gateway API is a JSON/WebSocket API. The Gateway API server is implemented in the _core_ and connected to by Gateway API clients implemented in _gateways_. This API is designed such that Gateways can have a very minimal user interface. At a minimum they need to be able to connect to the network (Ethernet or WiFi) and have a way for the user to initiate discovery (a single push-button would be sufficient).
+# Core — Message Broker — Gateway Interfaces
 
 ## Versioning
 
@@ -14,47 +10,47 @@ The API will be versioned using three integers separated by decimal points. Usin
 
 3. The third integer is incremented when bug fixes are made.
 
-The URL used to connect to the _core_ will contain the version number of the API. I.e. `/gateway-api/1.2.3/`.
-
 ## Initial Connection and Registration Flow
 
-Both the _core_ and _gateways_ have a special pairing mode which must be manually activated by the user. This is the only time during which pairing can occur. 
+Gateways need a way to gain authorization to connect to the message broker. 
 
 ```
 User                                 Core                                Gateway
   |                                    |                                     |
-1.|-- sets pairing mode -------------->|                                     |
+1.|<------------------- displays the unique device ID (e.g. serial number) --|
   |                                    |                                     |
-2.|-- sets pairing mode ---------------------------------------------------->|
+2.|-- enters uniq. ID of gateway ----->|                                     |
   |                                    |                                     |
-3.|                                    |<------------ makes paring request --|
+3.|<----- displays one time password --|                                     |
   |                                    |                                     |
-4.|<-- prompts to accept paring rqst --|                                     |
+4.|-- enters one time password --------------------------------------------->|
   |                                    |                                     |
-5.|-- accepts pairing request -------->|                                     |
+5.|                                    |<--- makes HTTP registration reqst --|
   |                                    |                                     |
-6.|                                    |-- sends credentials --------------->|
+6.|                                    |-- returns credentials, URI's, &c -->|
   |                                    |                                     |
-7.|                                    |<------------------------ connects --|
+7.|                                    |<--------- connects to msg. borker --|
   |                                    |                                     |
   V                                    V                                     V  
   ```
 
-1. To initiate pairing, the user first places the _core_ into pairing mode. During pairing mode, the _core_ advertizes itself as discoverable via mDNS/DNS-SD (AKA: Bonjour, Avahi, Zeroconf, ...). Pairing mode may be time limited to enhance security.
+1. The _user_ reads a unique device ID from the physical _gateway_ device ot it's UI.
 
-2. Once pairing mode is active on the _core_, the user initiates pairing mode on the _gateway_. 
+2. The _user_ enter the unique ID from the _gateway_ into the _core_. 
 
-3. The _gateway_ looks for the _core_ on the network, establishes a WebSocket connection to it, and sends it a resquest to pair. 
+3. The _core_ generates and displays a one time password.
 
-4. The _core_ prompts the user to accept the pairing request.
+4. The _user_ enters the one time password into the _gateway_.
 
-5. The user accepts the pairing request.
+5. The _gateway_ makes a regsitration request via HTTP to the _core_'s registration API.
 
-6. Once the pairing request has been accepted, the _core_ sends the _gateway_ credentials that will be used to connect 
+6. The _core_ authenticates the one time password; returns ccredenentials, URLs, etc.; and deltes the OTP. 
 
-7. The _gateway_ terminates its WebSocket connection to the _core_ and establishes a new connection using its credentails.
+7. The _gateway_ connects to the message broker.
 
 ## Routine Date Exchange
+
+_NOTE: This information is out of data and needs to be updated!_
 
 Similar to the connection flow described above, the routine data exchange between the _core_ and _gateways_ is designed such that _gateways_ can be implemented as simply as possible. 
 
