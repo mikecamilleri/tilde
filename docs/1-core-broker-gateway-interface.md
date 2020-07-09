@@ -4,9 +4,9 @@
 
 The API will be versioned using three integers separated by decimal points. Using the example version `1.2.3`:
 
-1. The first integer represeents an API version the guarantees only backwards compatable changes will be made. I.e. a _core_ implementing API version `1.3` will be able to communicate with Gateways implementing API version `1.0`, `1.1`, `1.2`, or `1.3`.  Before the first stable release, this first digit will be `0`.
+1. The first integer represents an API version the guarantees only backwards compatible changes will be made. I.e. a _core_ implementing API version `1.3` will be able to communicate with Gateways implementing API version `1.0`, `1.1`, `1.2`, or `1.3`.  Before the first stable release, this first digit will be `0`.
 
-2. The second integer is incremented when backwards-compatable features are added.
+2. The second integer is incremented when backwards-compatible features are added.
 
 3. The third integer is incremented when bug fixes are made.
 
@@ -25,16 +25,16 @@ User                                 Core                                Gateway
   |                                    |                                     |
 4.|-- enters one time password --------------------------------------------->|
   |                                    |                                     |
-5.|                                    |<--- makes HTTP registration reqst --|
+5.|                                    |<--- makes HTTP registration rqst. --|
   |                                    |                                     |
 6.|                                    |-- returns credentials, URI's, &c -->|
   |                                    |                                     |
-7.|                                    |<--------- connects to msg. borker --|
+7.|                                    |<--------- connects to msg. broker --|
   |                                    |                                     |
   V                                    V                                     V  
   ```
 
-1. The _user_ reads a unique device ID from the physical _gateway_ device ot it's UI.
+1. The _user_ reads a unique device ID from the physical _gateway_ device or its UI.
 
 2. The _user_ enter the unique ID from the _gateway_ into the _core_. 
 
@@ -42,9 +42,9 @@ User                                 Core                                Gateway
 
 4. The _user_ enters the one time password into the _gateway_.
 
-5. The _gateway_ makes a regsitration request via HTTP to the _core_'s registration API.
+5. The _gateway_ makes a registration request via HTTP to the _core_'s registration API.
 
-6. The _core_ authenticates the one time password; returns ccredenentials, URLs, etc.; and deltes the OTP. 
+6. The _core_ authenticates the one time password; returns credentials, URLs, etc.; and deletes the OTP. 
 
 7. The _gateway_ connects to the message broker.
 
@@ -54,7 +54,7 @@ _NOTE: This information is out of data and needs to be updated!_
 
 Similar to the connection flow described above, the routine data exchange between the _core_ and _gateways_ is designed such that _gateways_ can be implemented as simply as possible. 
 
-_Gateways_ are responsible for initiating and mantaining a WebSocket connection with the _core_. All data echange occurs over that connection. This allows the _gateways_ to only have to implement an WebSocket client and prevents them from having to advertize themselves using mDNS/DNS-SD.
+_Gateways_ are responsible for initiating and maintaining a WebSocket connection with the _core_. All data exchange occurs over that connection. This allows the _gateways_ to only have to implement an WebSocket client and prevents them from having to advertise themselves using mDNS/DNS-SD.
 
 All communications between the _core_ and a _gateway_ fit the following template:
 
@@ -66,9 +66,9 @@ All communications between the _core_ and a _gateway_ fit the following template
 }
 ```
 
-Only relevent, non-empty elements ("porperties" in JSON lingo) should to be included in each request. A `description` element with an empty value (`""`) would imply that it should be erased. _Gateways_ are not responsible for maintaing any information about the state of the core across connection sessions, other than their login credentials. Every time a `gateway` connects to the core, it should send complete information about itself and its _devices_ to the core as if it had never connected before. The core will match `gateways`, `devices`, and features across sessions by their `id` values. 
+Only relevant, non-empty elements ("properties" in JSON lingo) should to be included in each request. A `description` element with an empty value (`""`) would imply that it should be erased. _Gateways_ are not responsible for maintaining any information about the state of the core across connection sessions, other than their login credentials. Every time a `gateway` connects to the core, it should send complete information about itself and its _devices_ to the core as if it had never connected before. The core will match `gateways`, `devices`, and features across sessions by their `id` values. 
 
-It may seem odd that `gateways` holds an array. This is done monstly for consistancy with the other root-level elements. In some cases, however, it may make sense for multiple software _gateways_ to share a single WebSocket connection and thus a single set of authentication credentials. For example, a hardware device that is able to connect to ZigBee and Z-Wave _devices_ may want to define those protocols as separate _gateways_ but share a single registration flow, share a single set of credentials, and use a single WebSocket connection. 
+It may seem odd that `gateways` holds an array. This is done mostly for consistency with the other root-level elements. In some cases, however, it may make sense for multiple software _gateways_ to share a single WebSocket connection and thus a single set of authentication credentials. For example, a hardware device that is able to connect to ZigBee and Z-Wave _devices_ may want to define those protocols as separate _gateways_ but share a single registration flow, share a single set of credentials, and use a single WebSocket connection. 
 
 ### `gateways`
 
@@ -79,7 +79,7 @@ The `gateways` array contains objects in the following format:
     "hardwareId": "a-serial-number-or-similar",
     "id": "a-universally-unique-id-self-assigned-by-the-gateway",
     "name": "A Friendly Name",
-    "description": "A frindly decription of what the gateway does.",
+    "description": "A friendly description of what the gateway does.",
     "connected": true,
     "features": []
 }
@@ -97,7 +97,7 @@ The `devices` array contains objects in the following format:
     "gatewayId": "the-id-of-the-gateway-this-device-is-connected-to",
     "id": "a-unique-id-within-the-gateway",
     "name": "A Friendly Name",
-    "description": "A friendly decription of what this device does.",
+    "description": "A friendly description of what this device does.",
     "features": []
 }
 ```
@@ -110,7 +110,7 @@ The `devices` array contains objects in the following format:
 {
     "id": "a-unique-id-within-the-device",
     "name": "A Friendly Name",
-    "description": "A friendly decription of what this feature does.",
+    "description": "A friendly description of what this feature does.",
     "definition": {
         "standard": "the-name-of-the-standard-feature-type",
         "unit": "",
@@ -148,11 +148,11 @@ Standard _features_ will be defined in a similar way and will be a part of the s
 A few quick notes:
 
 - `jsonType` may be: "boolean", "number," or "string."
-- `units` are something like "fahrenheit," "percent," or "volt". I am not sure yet whether I want the whole name spelled out or whether a standard abbreviations will be used. In either case these will need to be defined somewhere -- probably along with the the standared _features_.
+- `units` are something like "fahrenheit," "percent," or "volt". I am not sure yet whether I want the whole name spelled out or whether a standard abbreviations will be used. In either case these will need to be defined somewhere -- probably along with the the standard _features_.
 - `min` and `max` are used to set bounds for `value` when `jsonType` is "number."
 - `options` is a list of valid `value` strings when `jsonType` is "string."
 - Some _features_ may not be settable. A device providing a weather report, for example, won't have settable _features_.
-- Some standard _features_ may be manditory. One such feature may be "connected".
+- Some standard _features_ may be mandatory. One such feature may be "connected".
 
 Below are some example hypothetical `device` objects:
 
