@@ -6,4 +6,4 @@ This repository is currently just a collection of notes from various iterations 
 
 ## Design Documents
 
-- Find them [here](https://github.com/mikecamilleri/tilde/tree/master/docs/).
+- Find them [here](docs).
