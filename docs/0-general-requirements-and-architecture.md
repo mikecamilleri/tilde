@@ -28,13 +28,15 @@ These home automation focused user stories are selected to illustrate interactio
 
 ![architecture diagram](architecture.png)
 
-A complete _Tilde_ system consists of five types of components.
+A complete _Tilde_ system consists of four major types of components.
 
 - **Devices:** _Devices_ can be connected physical objects such as light switches, thermostats, and door sensors. _Devices_ can also be entities on the internet such as a weather report for a certain location or a Twitter feed. 
 - **Gateways:** _Gateways_ connect to both the _message broker_ and _devices_ and act as an intermediary between them. _Gateways_ will typically implement a single IoT protocol such as Z-Wave, or interact with one or several closely related web services. _Gateways_ are software and may exist on the same device as the broker or their own device.
 - **Message Broker:** The _message broker_ implements one or more protocols (AMQP, MQTT, STOMP) and routes messages between the _gateways_ and _core_.
 - **Core:** The system has a single _core_ which provides interfaces for the other components, and basic functionality such an automation engine and data storage.
 - **User Interfaces:** The core will provide an API to which several _user interfaces_ may connect.
+- **Database:** The database is used by the core for persistent storage.
+- **Configuration Files:** Configuration files (not depicted) are used to configure various components of the system.
 
 ## Core Architecture
 
