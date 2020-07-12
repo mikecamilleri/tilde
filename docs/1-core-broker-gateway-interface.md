@@ -15,7 +15,7 @@ The API will be versioned using three integers separated by decimal points. Usin
 Gateways need a way to gain authorization to connect to the message broker. 
 
 ```
-User                                 Core                                Gateway
+User                             Core/RabbitMQ                           Gateway
   |                                    |                                     |
 1.|<------------------- displays the unique device ID (e.g. serial number) --|
   |                                    |                                     |
@@ -23,13 +23,13 @@ User                                 Core                                Gateway
   |                                    |                                     |
 3.|<----- displays one time password --|                                     |
   |                                    |                                     |
-4.|-- enters one time password --------------------------------------------->|
+4.|-- enters one time password and url of RabbitMQ ------------------------->|
   |                                    |                                     |
-5.|                                    |<--- makes HTTP registration rqst. --|
+5.|                                    |<-------- makes registration rqst. --|
   |                                    |                                     |
-6.|                                    |-- returns credentials, URI's, &c -->|
+6.|                                    |-- returns credentials etc. -------->|
   |                                    |                                     |
-7.|                                    |<--------- connects to msg. broker --|
+7.|                                    |<------ connects using credentials --|
   |                                    |                                     |
   V                                    V                                     V  
   ```
@@ -40,13 +40,13 @@ User                                 Core                                Gateway
 
 3. The _core_ generates and displays a one time password.
 
-4. The _user_ enters the one time password into the _gateway_.
+4. The _user_ enters the one time password and RabbitMQ URL into the _gateway_.
 
-5. The _gateway_ makes a registration request via HTTP to the _core_'s registration API.
+5. The _gateway_ makes a registration request via RabbitMQ.
 
-6. The _core_ authenticates the one time password; returns credentials, URLs, etc.; and deletes the OTP. 
+6. The _core_ authenticates the one time password; returns credentials, etc.; and deletes the OTP. 
 
-7. The _gateway_ connects to the message broker.
+7. The _gateway_ connects to the RabbitMQ using its new credentials.
 
 ## Routine Date Exchange
 
