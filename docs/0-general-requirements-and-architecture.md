@@ -33,9 +33,9 @@ A complete _Tilde_ system consists of seven major types of components.
 - **Devices:** _Devices_ can be connected physical objects such as light switches, thermostats, and door sensors. _Devices_ can also be entities on the internet such as a weather report for a certain location or a Twitter feed. 
 - **Gateways:** _Gateways_ connect to both the _message broker_ and _devices_ and act as an intermediary between them. _Gateways_ will typically implement a single IoT protocol such as Z-Wave, or interact with one or several closely related web services. _Gateways_ are software and may exist on the same hardware as the _core_ or their own hardware.
 - **Message Broker:** The _message broker_ implements one or more protocols (AMQP, MQTT, STOMP) and routes messages between the _gateways_ and _core_.
-- **Core:** The system has a single _core_ which consists of the automation factory, data layer, and User API.
+- **Core:** The system has a single _core_ which consists of the Automation Factory, Data Layer, and User API.
 - **User Interfaces:** _User interfaces_ connect to the _core_'s User API.
-- **Database:** The _core_'s data layer is implemented in a database.
+- **Database:** The _core_'s Data Layer is implemented in a database (not shown).
 - **Configuration Files:** _Configuration files_ (not shown) are used to configure various components of the system.
 
 ## Core Architecture
@@ -59,7 +59,7 @@ The _core_ has two primary interfaces: the User API and the Gateway API. The Use
 
 ### Internal Devices
 
-The _core_ may have _internal devices_. These may include things such as a clock or metronome, network connection information, system diagnostic information (CPU, memory, etc.), and support for notifications.
+The _core_ may have internal _devices_ (not shown). These may include things such as a clock or metronome, network connection information, system diagnostic information (CPU, memory, etc.), and support for notifications.
 
 ### Current State
 

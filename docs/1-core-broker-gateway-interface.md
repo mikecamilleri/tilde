@@ -36,7 +36,7 @@ User                             Core/RabbitMQ                           Gateway
 
 1. The _user_ reads a unique device ID from the physical _gateway_ device or its UI.
 
-2. The _user_ enter the unique ID from the _gateway_ into the _core_. 
+2. The _user_ enter the unique device ID from the _gateway_ into the _core_. 
 
 3. The _core_ generates and displays a one time password.
 
