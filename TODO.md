@@ -2,8 +2,9 @@
 
 A running list of things todo to keep me on track ...
 
-- [ ] set up RabbitMQ (docker or local? CLI config or HTTP API?)
 - [x] decide on database (SQLite https://github.com/mattn/go-sqlite3)
+- [ ] build GraphQL API in core (https://github.com/graph-gophers/graphql-go) and build out db tables
+- [ ] set up RabbitMQ (docker or local? CLI config or HTTP API?)
 - [ ] configure database to store auths
 - [ ] build auth engine in core 
 - [ ] build rudementary gateway for testing
