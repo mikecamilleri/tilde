@@ -50,7 +50,7 @@ User                             Core/RabbitMQ                           Gateway
 
 ## Routine Date Exchange
 
-_NOTE: This information is out of data and needs to be updated!_
+_NOTE: This information is out of date and needs to be updated!_
 
 Similar to the connection flow described above, the routine data exchange between the _core_ and _gateways_ is designed such that _gateways_ can be implemented as simply as possible. 
 

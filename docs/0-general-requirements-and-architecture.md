@@ -28,15 +28,15 @@ These home automation focused user stories are selected to illustrate interactio
 
 ![architecture diagram](architecture.png)
 
-A complete _Tilde_ system consists of four major types of components.
+A complete _Tilde_ system consists of seven major types of components.
 
 - **Devices:** _Devices_ can be connected physical objects such as light switches, thermostats, and door sensors. _Devices_ can also be entities on the internet such as a weather report for a certain location or a Twitter feed. 
-- **Gateways:** _Gateways_ connect to both the _message broker_ and _devices_ and act as an intermediary between them. _Gateways_ will typically implement a single IoT protocol such as Z-Wave, or interact with one or several closely related web services. _Gateways_ are software and may exist on the same device as the broker or their own device.
+- **Gateways:** _Gateways_ connect to both the _message broker_ and _devices_ and act as an intermediary between them. _Gateways_ will typically implement a single IoT protocol such as Z-Wave, or interact with one or several closely related web services. _Gateways_ are software and may exist on the same hardware as the _core_ or their own hardware.
 - **Message Broker:** The _message broker_ implements one or more protocols (AMQP, MQTT, STOMP) and routes messages between the _gateways_ and _core_.
-- **Core:** The system has a single _core_ which provides interfaces for the other components, and basic functionality such an automation engine and data storage.
-- **User Interfaces:** The core will provide an API to which several _user interfaces_ may connect.
-- **Database:** The database is used by the core for persistent storage.
-- **Configuration Files:** Configuration files (not depicted) are used to configure various components of the system.
+- **Core:** The system has a single _core_ which consists of the automation factory, data layer, and User API.
+- **User Interfaces:** _User interfaces_ connect to the _core_'s User API.
+- **Database:** The _core_'s data layer is implemented in a database.
+- **Configuration Files:** _Configuration files_ (not shown) are used to configure various components of the system.
 
 ## Core Architecture
 
@@ -48,14 +48,14 @@ In order to perform control and automation functions the _core_ must be able to:
 2. Store and update a representation of the current state of _devices_.
 3. Store and update a representation of the desired state of the _devices_.
 4. Accept user input regarding the desired state of _devices_. 
-5. Based on the current state of _devices_, determine what the desired state should be. This is "automation."
+5. Based on the current state of _devices_, determine what the desired state should be.
 6. Control _devices_. 
 
 Additionally, the history of device state should be stored in a database. This will facilitate things such as machine learning later. 
 
 ### External Interfaces
 
-The _core_ has two primary interfaces: the User API and the Gateway API. The User API will be either a RESTful JSON/HTTP API or a GraphQL API and will allow for the configuration and control of the _core_, _gateways_, and _devices_. The User API should be the only way the users need to interact with the system. The Gateway API consists of two parts: the primary API will implement AMQP (and possibly ohter protocols) and communicate with _gateways_ via the _message broker_; the secondary API will be HTTP and used to register new _gateways_ only.
+The _core_ has two primary interfaces: the User API and the Gateway API. The User API will be a GraphQL API and will allow for the configuration and control of the _core_, _gateways_, and _devices_. The User API should be the only way the users need to interact with the system. The Gateway API will implement AMQP and communicate with _gateways_ via the _message broker_.
 
 ### Internal Devices
 
@@ -86,9 +86,9 @@ Consideration needs to be given to the handling of manual changes to Desired Sta
 
 Rules are used to determine what the Desired State should be based on the Current State. 
 
-### Automation Engine
+### Automation Factory
 
-Using rules, the Automation Engine will set the layers of Desired State based on the current State. 
+Using rules, the Automation Factory will set the layers of Desired State based on the current State. 
 
 ## Automation Data Flow
 
