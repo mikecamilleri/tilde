@@ -189,5 +189,7 @@ enum Unit {
     BYTE
 }
 
-"""RFC 3339 datetime value (https://tools.ietf.org/html/rfc3339)"""
+"""
+RFC 3339 datetime value (https://tools.ietf.org/html/rfc3339)
+"""
 scalar DateTime

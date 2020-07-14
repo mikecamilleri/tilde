@@ -65,30 +65,13 @@ The _core_ may have internal _devices_ (not shown). These may include things suc
 
 A data structure that stores the current states of _devices_.
 
-### Layers of Desired State
+### Desired State
 
-A layered data structure that stores the desired states of _devices_ and in which the attributes in each layer override the same attributes in layers below.
-
-0. **Emergency:** this layer has absolute highest priority
-    - fire alarm; entry alarm; natural disaster; water leak
-1. **Critical:** contains critical overrides
-    - if it's raining, the windows should be closed
-2. **Temporary:** contains temporary, non critical state overrides 
-    - watching a movie
-3. **Base:** contains the normal priority state layers which are set by conditions such as
-    - day/night; presence/absence
-4. **Default:** contains safe defaults for all devices
-    - lighting off; temperature above freezing; windows closed
-
-Consideration needs to be given to the handling of manual changes to Desired State. For example, what should happen if someone turns on a light using a switch? Obviously, the light would come on and the associated _gateway_ would send a message to the core updating the current state of that light, but how do we determine when that light should turn off? Should it never turn off? Probably not. Should it turn off the next time its state would normally be set? Is there a particular layer of Desired State in which manual changes should be applied? In extreme cases such as a burglar alarm, should we contradict manual changes such as by turning lights back on immediately after they are turned off? 
+_NOTE: I am actively redesigning the structure of desired state. The primary issue with the previous "layered state" is that it doesn't handle manual overrides (e.g. turning on a light switch) very well. 
 
 ### Rules
 
 Rules are used to determine what the Desired State should be based on the Current State. 
-
-### Automation Factory
-
-Using rules, the Automation Factory will set the layers of Desired State based on the current State. 
 
 ## Automation Data Flow
 
@@ -96,11 +79,11 @@ Using rules, the Automation Factory will set the layers of Desired State based o
     - "it is now raining"
 2. The _gateway_ sends a message containing the _device_ state change to the _message broker_.
 3. The _core_ receives the message from the _message broker_. 
-3. The Device API updates the Current State data structure.
-4. The Automation Engine applies rules based on the new Current State and updates the appropriate layers of Desired State.
-5. The _core_ sends messages to the _message broker_ addressed to the appropriate _gateways_ requesting that they change the state of one or more of their _devices_.
+4. The Message Consumer updates the Current State data structure and passage the event to the Automation Engine Engine.
+5. The Automation Engine executes Rules and updates the Desired State.
+6. The Message Generator compares Desired State to Current State and sends messages to the _message broker_ addressed to the appropriate _gateways_ requesting that they change the state of one or more of their _devices_.
     - "close windows, turn off irrigation"
-6. The _gateways_ send messages to the _message broker_ when their _device_ states change.
+7. The _gateways_ send messages to the _message broker_ when their _device_ states change.
     - "windows are closed, irrigation is off"
 
-There is a potential for infinite loops of the above and measures should be taken in the Automation Engine to prevent such loops. 
+There is a potential for infinite loops of the above and measures should be taken in the Automation Factory to prevent such loops. 
