@@ -1,0 +1,256 @@
+"""
+A gateway.
+"""
+type Gateway {
+    id: ID!
+    name: String
+    description: String
+    manufacturer: String
+    model: String
+    serialNumber: String
+    softwareVersion: String
+    protocols: [GatewayProtocol!]!
+    auth: Auth
+    features: [Feature!]
+}
+
+"""
+Authentication credentials and authorizations for a gateway.
+"""
+type GatewayAuth {
+    id: ID!
+    username: String!
+    password: String!
+    protocols: [GatewayProtocol!]!
+    listenOn: String
+    reportOn: String
+    createdDateTime: DateTime
+    updatedDateTime: DateTime
+}
+
+"""
+The set of protocols which may be implmented by a gateway.
+"""
+enum GatewayProtocol {
+    AMQP
+    MQTT
+    STOMP
+}
+
+"""
+A device.
+"""
+type Device {
+    id: ID!
+    name: String
+    description: String
+    manufacturer: String
+    model: String
+    serialNumber: String
+    softwareVersion: String
+    # location: Location
+    features: [Feature!]
+}
+
+# type Location {
+#     id: ID!
+#     name: String
+#     description: String
+#     parent: Location
+# }
+
+"""
+A an interface for features.
+"""
+interface Feature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    archiveSettings: Boolean
+    archiveReadings: Boolean
+}
+
+"""
+A boolean feature.
+"""
+type BooleanFeature implements Feature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    archiveSettings: Boolean
+    archiveReadings: Boolean
+    settings: [BooleanValue!]
+    readings: [BooleanValue!]
+}
+
+"""
+A boolean value.
+"""
+type BooleanValue {
+    dateTime: DateTime
+    value: Boolean
+}
+
+"""
+A string feature.
+"""
+type StringFeature implements Feature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    archiveSettings: Boolean
+    archiveReadings: Boolean
+    options: [StringValue!]
+    settings: [StringValue!]
+    readings: [StringValue!]
+}
+
+"""
+A string value.
+"""
+type StringValue {
+    dateTime: DateTime
+    value: String
+}
+
+"""
+An int feature. Int featuress are unitless. For measurements such as 
+temperature, volume, etc., `type FloatFeature` should be used.
+"""
+type IntFeature implements Feature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    archiveSettings: Boolean
+    archiveReadings: Boolean
+    min: IntValue
+    max: IntValue
+    settings: [IntValue!]
+    readings: [IntValue!]
+}
+
+"""
+An int value.
+"""
+type IntValue {
+    dateTime: DateTime
+    value: Int
+}
+
+"""
+A float feature.
+"""
+type FloatFeature implements Feature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    archiveSettings: Boolean
+    archiveReadings: Boolean
+    min: FloatValue
+    max: FloatValue
+    settings: [FloatValue!]
+    readings: [FloatValue!]
+}
+
+"""
+A float value.
+"""
+type FloatValue {
+    dateTime: DateTime
+    unitPrefix: UnitPrefix
+    unit: Unit
+    value: Float
+}
+
+"""
+Metric and binary unit prefixes.
+"""
+enum UnitPrefix {
+    # METRIC
+    YOTTA
+    ZETTA
+    EXA
+    PETA
+    TERA
+    GIGA
+    MEGA
+    KILO
+    HECTO
+    DECA
+    DECI
+    CENTI
+    MILLI
+    MICRO
+    NANO
+    PICO
+    FEMTO
+    ATTO
+    ZEPTO
+    YOCTO
+
+    # BINARY
+    KIBI
+    MEBI
+    GIBI
+    TEBI
+    PEBI
+    EXBI
+    ZEBI
+    YOBI
+}
+
+"""
+Basic collection of units to get started. 
+
+TODO: Expand list of type or make the API exclusively metric.
+      Should the burdon to convert be on the API or client?
+      Should data be stored in their original unit or some standard unit?
+"""
+enum Unit {
+    # MASS/WEIGHT
+    GRAM
+
+    # VOLUME
+    LITER
+
+    # LENGTH
+    METER
+
+    # TIME
+    SECOND
+
+    # ANGLE
+    DEGREE
+
+    # TEMPERATURE
+    DEGREE_CELSIUS
+
+    # PRESSURE
+    PASCAL
+
+    # ELECTRIC CURRENT
+    AMPERE
+
+    # ELECTRIC POTENTIAL
+    VOLT
+
+    # POWER
+    WATT
+
+    # ENERGY
+    JOULE
+
+    # DATA
+    BIT
+    BYTE
+}
+
+"""
+RFC 3339 datetime value (https://tools.ietf.org/html/rfc3339)
+"""
+scalar DateTime
