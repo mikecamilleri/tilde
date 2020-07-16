@@ -67,8 +67,6 @@ interface Feature {
     name: String
     description: String
     settable: Boolean!
-    archiveSettings: Boolean
-    archiveReadings: Boolean
 }
 
 """
@@ -79,8 +77,6 @@ type BooleanFeature implements Feature {
     name: String
     description: String
     settable: Boolean!
-    archiveSettings: Boolean
-    archiveReadings: Boolean
     settings: [BooleanValue!]
     readings: [BooleanValue!]
 }
@@ -101,9 +97,7 @@ type StringFeature implements Feature {
     name: String
     description: String
     settable: Boolean!
-    archiveSettings: Boolean
-    archiveReadings: Boolean
-    options: [StringValue!]
+    options: [String!]
     settings: [StringValue!]
     readings: [StringValue!]
 }
@@ -125,12 +119,17 @@ type IntFeature implements Feature {
     name: String
     description: String
     settable: Boolean!
-    archiveSettings: Boolean
-    archiveReadings: Boolean
-    min: IntValue
-    max: IntValue
+    range: IntRange
     settings: [IntValue!]
     readings: [IntValue!]
+}
+
+"""
+An int range.
+"""
+type IntRange {
+    min: Int
+    max: Int
 }
 
 """
@@ -149,12 +148,19 @@ type FloatFeature implements Feature {
     name: String
     description: String
     settable: Boolean!
-    archiveSettings: Boolean
-    archiveReadings: Boolean
-    min: FloatValue
-    max: FloatValue
+    range: FloatRange
     settings: [FloatValue!]
     readings: [FloatValue!]
+}
+
+"""
+A float range.
+"""
+type FloatRange {
+    unitPrefix: UnitPrefix
+    unit: Unit
+    min: FloatValue
+    max: FloatValue
 }
 
 """
@@ -207,9 +213,16 @@ enum UnitPrefix {
 """
 Basic collection of units to get started. 
 
-TODO: Expand list of type or make the API exclusively metric.
-      Should the burdon to convert be on the API or client?
-      Should data be stored in their original unit or some standard unit?
+TODO: 1. Change feature types above to interfaces
+      2. Create "type Generic<type>Feature implements Feature & <type>Feature" 
+         for each -- no units!
+      3. Create "type WhateverFeature implements Feature & <type>Feature" for 
+         things like temperature, and distance. For each, create an enum with 
+         relevent units. 
+         NOTE: Data will be stored in their original units. The API will convert
+               to the unit requested. I.e. a thermostat may store 
+               DEGREES_CELSIOUS for its "temperature" feature, but the API can 
+               return DEGREES_FAHRENHEIT or KELVIN if asked.
 """
 enum Unit {
     # MASS/WEIGHT
