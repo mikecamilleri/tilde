@@ -70,9 +70,17 @@ interface Feature {
 }
 
 """
-A boolean feature.
+A interface for boolean features.
 """
-type BooleanFeature implements Feature {
+interface BooleanFeature {
+    settings: [BooleanValue!]
+    readings: [BooleanValue!]
+}
+
+"""
+A generic boolean feature.
+"""
+type GenericBooleanFeature implements Feature & BooleanFeature {
     id: ID!
     name: String
     description: String
@@ -90,9 +98,18 @@ type BooleanValue {
 }
 
 """
-A string feature.
+An interface for string features.
 """
-type StringFeature implements Feature {
+interface StringFeature {
+    options: [String!]
+    settings: [StringValue!]
+    readings: [StringValue!]
+}
+
+"""
+A generic string feature.
+"""
+type GenericStringFeature implements Feature & StringFeature {
     id: ID!
     name: String
     description: String
@@ -101,6 +118,7 @@ type StringFeature implements Feature {
     settings: [StringValue!]
     readings: [StringValue!]
 }
+
 
 """
 A string value.
@@ -111,23 +129,32 @@ type StringValue {
 }
 
 """
-An int feature. Int featuress are unitless. For measurements such as 
-temperature, volume, etc., `type FloatFeature` should be used.
+An interface for int features. Int featuress are unitless. For measurements such as 
+temperature, volume, etc., a non-generic float feature should be used.
 """
-type IntFeature implements Feature {
-    id: ID!
-    name: String
-    description: String
-    settable: Boolean!
-    range: IntRange
+interface IntFeature {
+    valueRange: IntValueRange
     settings: [IntValue!]
     readings: [IntValue!]
 }
 
 """
-An int range.
+A generic int feature
 """
-type IntRange {
+type GenericIntFeature implements Feature & IntFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    valueRange: IntValueRange
+    settings: [IntValue!]
+    readings: [IntValue!]
+}
+
+"""
+An int value range.
+"""
+type IntValueRange {
     min: Int
     max: Int
 }
@@ -141,37 +168,67 @@ type IntValue {
 }
 
 """
-A float feature.
+An interface for float features.
 """
-type FloatFeature implements Feature {
-    id: ID!
-    name: String
-    description: String
-    settable: Boolean!
-    range: FloatRange
+interface FloatFeature {
+    valueRange: FloatValueRange
     settings: [FloatValue!]
     readings: [FloatValue!]
 }
 
 """
-A float range.
+An interface for float ranges.
 """
-type FloatRange {
-    unitPrefix: UnitPrefix
-    unit: Unit
+interface FloatValueRange {
+    # unitPrefix: UnitPrefix
+    # unit: Unit
     min: FloatValue
     max: FloatValue
 }
 
 """
-A float value.
+An interface for float values.
 """
-type FloatValue {
+interface FloatValue {
     dateTime: DateTime
-    unitPrefix: UnitPrefix
-    unit: Unit
+    # unitPrefix: UnitPrefix
+    # unit: Unit
     value: Float
 }
+
+"""
+A generic (unitless) float feature.
+"""
+type GenericFloatFeature implements Feature & FloatFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    range: GenericFloatValueRange
+    settings: [GenericFloatValue!]
+    readings: [GenericFloatValue!]
+}
+
+"""
+An generic (unitless) float falue range.
+"""
+type GenericFloatValueRange implements FloatValueRange {
+    # unitPrefix: UnitPrefix
+    # unit: Unit
+    min: GenericFloatValue
+    max: GenericFloatValue
+}
+
+"""
+An generic (unitless) float value.
+"""
+type GenericFloatValue implements FloatValue{
+    dateTime: DateTime
+    # unitPrefix: UnitPrefix
+    # unit: Unit
+    value: Float
+}
+
 
 """
 Metric and binary unit prefixes.
