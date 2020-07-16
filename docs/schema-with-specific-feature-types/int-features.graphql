@@ -1,0 +1,38 @@
+"""
+An interface for int features. Int featuress are unitless. For measurements such as 
+temperature, volume, etc., a non-generic float feature should be used.
+"""
+interface IntFeature {
+    settingValueRange: IntValueRange
+    settings: [IntValue!]
+    readings: [IntValue!]
+}
+
+"""
+A generic int feature
+"""
+type GenericIntFeature implements Feature & IntFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    settingValueRange: IntValueRange
+    settings: [IntValue!]
+    readings: [IntValue!]
+}
+
+"""
+An int value range.
+"""
+type IntValueRange {
+    min: Int
+    max: Int
+}
+
+"""
+An int value.
+"""
+type IntValue {
+    dateTime: DateTime
+    value: Int!
+}

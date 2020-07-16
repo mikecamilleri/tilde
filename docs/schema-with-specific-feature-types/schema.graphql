@@ -1,0 +1,96 @@
+"""
+A gateway.
+"""
+type Gateway {
+    id: ID!
+    name: String
+    description: String
+    manufacturer: String
+    model: String
+    serialNumber: String
+    softwareVersion: String
+    protocols: [GatewayProtocol!]!
+    auth: Auth
+    features: [Feature!]
+}
+
+"""
+Authentication credentials and authorizations for a gateway.
+"""
+type GatewayAuth {
+    id: ID!
+    username: String!
+    password: String!
+    protocols: [GatewayProtocol!]!
+    listenOn: String
+    reportOn: String
+    createdDateTime: DateTime
+    updatedDateTime: DateTime
+}
+
+"""
+The set of protocols which may be implmented by a gateway.
+"""
+enum GatewayProtocol {
+    AMQP
+    MQTT
+    STOMP
+}
+
+"""
+A device.
+"""
+type Device {
+    id: ID!
+    name: String
+    description: String
+    manufacturer: String
+    model: String
+    serialNumber: String
+    softwareVersion: String
+    features: [Feature!]
+}
+
+"""
+A an interface for features.
+"""
+interface Feature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+}
+
+"""
+Binary unit prefixes.
+"""
+enum BinaryUnitPrefix {
+    KIBI
+    MEBI
+    GIBI
+    TEBI
+    PEBI
+    EXBI
+    ZEBI
+    YOBI
+}
+
+"""
+Basic collection of units to get started. 
+
+TODO: X. Change feature types above to interfaces
+      X. Create "type Generic<type>Feature implements Feature & <type>Feature" 
+         for each -- no units!
+      X. Create "type WhateverFeature implements Feature & <type>Feature" for 
+         things like temperature, and distance. For each, create an enum with 
+         relevent units. 
+         NOTE: Data will be stored in their original units. The API will convert
+               to the unit requested. I.e. a thermostat may store 
+               DEGREES_CELSIOUS for its "temperature" feature, but the API can 
+               return DEGREES_FAHRENHEIT or KELVIN if asked.
+"""
+
+"""
+RFC 3339 datetime value (https://tools.ietf.org/html/rfc3339)
+"""
+scalar DateTime

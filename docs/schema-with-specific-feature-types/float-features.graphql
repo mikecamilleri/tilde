@@ -1,0 +1,332 @@
+"""
+An interface for float features.
+"""
+interface FloatFeature {
+    settingValueRange: FloatValueRange
+    settings: [FloatValue!]
+    readings: [FloatValue!]
+}
+
+"""
+An interface for float ranges.
+"""
+interface FloatValueRange {
+    min: FloatValue
+    max: FloatValue
+}
+
+"""
+An interface for float values.
+"""
+interface FloatValue {
+    dateTime: DateTime
+    value: Float!
+}
+
+"""
+A generic (unitless) float feature.
+"""
+type GenericFloatFeature implements Feature & FloatFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    settingValueRange: GenericFloatValueRange
+    settings: [GenericFloatValue!]
+    readings: [GenericFloatValue!]
+}
+
+"""
+An generic (unitless) float falue range.
+"""
+type GenericFloatValueRange implements FloatValueRange {
+    min: Float
+    max: Float
+}
+
+"""
+An generic (unitless) float value.
+"""
+type GenericFloatValue implements FloatValue {
+    dateTime: DateTime
+    value: Float!
+}
+
+"""
+A weight float feature.
+"""
+type WeightFloatFeature implements Feature & FloatFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    settingValueRange: WeightFloatValueRange
+    settings: [WeightFloatValue!]
+    readings: [WeightFloatValue!]
+}
+
+"""
+A weight float value range.
+"""
+type WeightFloatValueRange implements FloatValueRange {
+    metricUnitPrefix: MetricUnitPrefix
+    unit: WeightUnit!
+    min: Float
+    max: Float
+}
+
+"""
+A weight float value.
+"""
+type WeightFloatValue implements FloatValue {
+    dateTime: DateTime
+    metricUnitPrefix: MetricUnitPrefix
+    unit: WeightUnit!
+    value: Float!
+}
+
+"""
+Units of weight.
+"""
+enum WeightUnit {
+    GRAM
+    POUND
+}
+
+"""
+A volume float feature.
+"""
+type VolumeFloatFeature implements Feature & FloatFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    settingValueRange: VolumeFloatValueRange
+    settings: [VolumeFloatValue!]
+    readings: [VolumeFloatValue!]
+}
+
+"""
+A volume float value range.
+"""
+type VolumeFloatValueRange implements FloatValueRange {
+    metricUnitPrefix: MetricUnitPrefix
+    unit: VolumeUnit!
+    min: Float
+    max: Float
+}
+
+"""
+A volume float value.
+"""
+type VolumeFloatValue implements FloatValue {
+    dateTime: DateTime
+    metricUnitPrefix: MetricUnitPrefix
+    unit: VolumeUnit!
+    value: Float!
+}
+
+"""
+Units of volume.
+"""
+enum VolumeUnit {
+    LITER
+    US_GALLON
+    IMPERIAL_GALLON
+}
+
+"""
+A length float feature.
+"""
+type LengthFloatFeature implements Feature & FloatFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    settingValueRange: LengthFloatValueRange
+    settings: [LengthFloatValue!]
+    readings: [LengthFloatValue!]
+}
+
+"""
+A length float value range.
+"""
+type LengthFloatValueRange implements FloatValueRange {
+    metricUnitPrefix: MetricUnitPrefix
+    unit: LengthUnit!
+    min: Float
+    max: Float
+}
+
+"""
+A length float value.
+"""
+type LengthFloatValue implements FloatValue {
+    dateTime: DateTime
+    metricUnitPrefix: MetricUnitPrefix
+    unit: LengthUnit!
+    value: Float!
+}
+
+"""
+Units of length.
+"""
+enum LengthUnit {
+    METER
+    INCH
+    FOOT
+    YARD
+    STATUTE_MILE
+    NAUTICAL_MILE
+}
+
+"""
+A temperature float feature.
+"""
+type TemperatureFloatFeature implements Feature & FloatFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    settingValueRange: TemperatureFloatValueRange
+    settings: [TemperatureFloatValue!]
+    readings: [TemperatureFloatValue!]
+}
+
+"""
+A temperature float value range.
+"""
+type TemperatureFloatValueRange implements FloatValueRange {
+    unit: TemperatureUnit!
+    min: Float
+    max: Float
+}
+
+"""
+A temperature float value.
+"""
+type TemperatureFloatValue implements FloatValue {
+    dateTime: DateTime
+    unit: TemperatureUnit!
+    value: Float!
+}
+
+"""
+Units of temperature.
+"""
+enum TemperatureUnit {
+    KELVIN
+    DEGREE_CELSIUS
+    DEGREE_FAHRENHEIT
+}
+
+"""
+A pressure float feature.
+"""
+type PressureFloatFeature implements Feature & FloatFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    settingValueRange: PressureFloatValueRange
+    settings: [PressureFloatValue!]
+    readings: [PressureFloatValue!]
+}
+
+"""
+A pressure float value range.
+"""
+type PressureFloatValueRange implements FloatValueRange {
+    metricUnitPrefix: MetricUnitPrefix
+    unit: PressureUnit!
+    min: Float
+    max: Float
+}
+
+"""
+A pressure float value.
+"""
+type PressureFloatValue implements FloatValue {
+    dateTime: DateTime
+    metricUnitPrefix: MetricUnitPrefix
+    unit: PressureUnit!
+    value: Float!
+}
+
+"""
+Units of pressure.
+"""
+enum PressureUnit {
+    PASCAL
+    BAR
+    STANDARD_ATMOSPHERE
+    TORR
+    POUND_PER_SQUARE_INCH
+    METER_OF_MERCURY
+    INCH_OF_MERCURY
+}
+
+"""
+An angle float feature.
+"""
+type AngleFloatFeature implements Feature & FloatFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    settingValueRange: AngleFloatValueRange
+    settings: [AngleFloatValue!]
+    readings: [AngleFloatValue!]
+}
+
+"""
+An angle float value range.
+"""
+type AngleFloatValueRange implements FloatValueRange {
+    unit: AngleUnit!
+    min: Float
+    max: Float
+}
+
+"""
+An angle float value.
+"""
+type AngleFloatValue implements FloatValue {
+    dateTime: DateTime
+    unit: AngleUnit!
+    value: Float!
+}
+
+"""
+Units of angle.
+"""
+enum AngleUnit {
+    RADIAN
+    DEGREE
+}
+
+"""
+Metric unit prefixes.
+"""
+enum MetricUnitPrefix {
+    YOTTA
+    ZETTA
+    EXA
+    PETA
+    TERA
+    GIGA
+    MEGA
+    KILO
+    HECTO
+    DECA
+    DECI
+    CENTI
+    MILLI
+    MICRO
+    NANO
+    PICO
+    FEMTO
+    ATTO
+    ZEPTO
+    YOCTO
+}

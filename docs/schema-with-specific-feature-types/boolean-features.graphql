@@ -1,0 +1,27 @@
+"""
+An interface for boolean features.
+"""
+interface BooleanFeature {
+    settings: [BooleanValue!]
+    readings: [BooleanValue!]
+}
+
+"""
+A generic boolean feature.
+"""
+type GenericBooleanFeature implements Feature & BooleanFeature {
+    id: ID!
+    name: String
+    description: String
+    settable: Boolean!
+    settings: [BooleanValue!]
+    readings: [BooleanValue!]
+}
+
+"""
+A boolean value.
+"""
+type BooleanValue {
+    dateTime: DateTime
+    value: Boolean
+}
