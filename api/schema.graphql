@@ -48,18 +48,18 @@ type Device {
     model: String
     serialNumber: String
     softwareVersion: String
-    locations: [Location!]
+    # locations: [Location!]
     features: [Feature!]
 }
 
-"""
-A location in which I device may exist.
-"""
-type Location {
-    id: ID!
-    name: String
-    description: String
-}
+# 
+# A location in which a device may exist.
+# 
+# type Location {
+#     id: ID!
+#     name: String
+#     description: String
+# }
 
 """
 A an interface for features.
