@@ -1,0 +1,186 @@
+"""
+A gateway.
+"""
+type Gateway {
+    id: ID!
+    name: String
+    description: String
+    manufacturer: String
+    model: String
+    serialNumber: String
+    softwareVersion: String
+    protocols: [GatewayProtocol!]!
+    auth: Auth
+    features: [Feature!]
+}
+
+"""
+Authentication credentials and authorizations for a gateway.
+"""
+type GatewayAuth {
+    id: ID!
+    username: String!
+    password: String!
+    protocols: [GatewayProtocol!]!
+    listenOn: String
+    reportOn: String
+    createdDateTime: DateTime
+    updatedDateTime: DateTime
+}
+
+"""
+The set of protocols which may be implmented by a gateway.
+"""
+enum GatewayProtocol {
+    AMQP
+    MQTT
+    STOMP
+}
+
+"""
+A device.
+"""
+type Device {
+    id: ID!
+    name: String
+    description: String
+    manufacturer: String
+    model: String
+    serialNumber: String
+    softwareVersion: String
+    locations: [Location!]
+    features: [Feature!]
+}
+
+"""
+A location in which I device may exist.
+"""
+type Location {
+    id: ID!
+    name: String
+    description: String
+}
+
+"""
+A an interface for features.
+"""
+interface Feature {
+    id: ID!
+    name: String
+    description: String
+    standard: String
+    settable: Boolean!
+}
+
+"""
+A boolean feature.
+"""
+type BooleanFeature implements Feature {
+    id: ID!
+    name: String
+    description: String
+    standard: String
+    settable: Boolean!
+    settings: [BooleanValue!]
+    readings: [BooleanValue!]
+}
+
+"""
+A boolean value.
+"""
+type BooleanValue {
+    dateTime: DateTime
+    value: Boolean
+}
+
+"""
+A float feature.
+"""
+type FloatFeature implements Feature {
+    id: ID!
+    name: String
+    description: String
+    standard: String
+    settable: Boolean!
+    settingValueRange: FloatValueRange
+    settings: [FloatValue!]
+    readings: [FloatValue!]
+}
+
+"""
+A float value range.
+"""
+type FloatValueRange {
+    unitPrefix: String
+    unit: String
+    min: Float
+    max: Float
+}
+
+"""
+A float value.
+"""
+type FloatValue {
+    dateTime: DateTime
+    unitPrefix: String
+    unit: String
+    value: Float!
+}
+
+"""
+An int feature. Int featuress are unitless. For measurements such as 
+temperature, volume, etc., a float feature should be used.
+"""
+type IntFeature implements Feature {
+    id: ID!
+    name: String
+    description: String
+    standard: String
+    settable: Boolean!
+    settingValueRange: IntValueRange
+    settings: [IntValue!]
+    readings: [IntValue!]
+}
+
+"""
+An int value range.
+"""
+type IntValueRange {
+    min: Int
+    max: Int
+}
+
+"""
+An int value.
+"""
+type IntValue {
+    dateTime: DateTime
+    value: Int!
+}
+
+"""
+A string feature.
+"""
+type GenericStringFeature implements Feature {
+    id: ID!
+    name: String
+    description: String
+    standard: String
+    settable: Boolean!
+    options: [String!]
+    settings: [StringValue!]
+    readings: [StringValue!]
+}
+
+"""
+A string value.
+"""
+type StringValue {
+    dateTime: DateTime
+    value: String
+}
+
+"""
+RFC 3339 datetime value (https://tools.ietf.org/html/rfc3339)
+"""
+scalar DateTime

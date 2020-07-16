@@ -1,0 +1,145 @@
+{
+    "features": {
+        "WEIGHT": {
+            "meta": {
+                "name": "Weight"
+            },
+            "validation": {
+                "requiredValueType": "FLOAT",
+                "validValueUnits": [
+                    "GRAM",
+                    "POUND"
+                ]
+            }
+        },
+        "VOLUME": {
+            "meta": {
+                "name": "Volume"
+            },
+            "validation": {
+                "requiredValueType": "FLOAT",
+                "validValueUnits": [
+                    "LITER",
+                    "US_GALLON",
+                    "IMPERIAL_GALLON"
+                ]
+            }
+        },
+        "LENGTH": {
+            "meta": {
+                "name": "Length"
+            },
+            "validation": {
+                "requiredValueType": "FLOAT",
+                "validValueUnits": [
+                    "METER",
+                    "INCH",
+                    "FOOT",
+                    "YARD",
+                    "STATUTE_MILE",
+                    "NAUTICAL_MILE"
+                ]
+            }
+        },
+        "TEMPERATURE": {
+            "meta": {
+                "name": "Temperature"
+            },
+            "validation": {
+                "requiredValueType": "FLOAT",
+                "validValueUnits": [
+                    "KELVIN",
+                    "DEGREE_CELSIUS",
+                    "DEGREE_FAHRENHEIT"
+                ]
+            }
+        },
+        "PRESSURE": {
+            "meta": {
+                "name": "Pressure"
+            },
+            "validation": {
+                "requiredValueType": "FLOAT",
+                "validValueUnits": [
+                    "PASCAL",
+                    "BAR",
+                    "STANDARD_ATMOSPHERE",
+                    "TORR",
+                    "POUND_PER_SQUARE_INCH",
+                    "METER_OF_MERCURY",
+                    "INCH_OF_MERCURY"
+                ]
+            }
+        },
+        "ANGLE": {
+            "meta": {
+                "name": "Angle"
+            },
+            "validation": {
+                "requiredValueType": "FLOAT",
+                "validValueUnits": [
+                    "RADIAN",
+                    "DEGREE"
+                ]
+            }
+        },
+        "SWITCH": {
+            "meta": {
+                "name": "Switch",
+                "description": "A simple on/off switch."
+            },
+            "validation": {
+                "requiredValueType": "STRING",
+                "requiredValueOptions": [
+                    "ON",
+                    "OFF"
+                ]
+            }
+        },
+        "THERMOSTAT_MODE": {
+            "meta": {
+                "name": "Thermostat Mode",
+                "description": "The operating mode of a thermostat."
+            },
+            "validation": {
+                "requiredValueType": "STRING",
+                "requiredValueOptions": [
+                    "HEAT",
+                    "AUTO",
+                    "COOL",
+                    "OFF"
+                ]
+            }
+        }
+    },
+    "unitPrefixes": {
+        "YOTTA": 10E+24,
+        "ZETTA": 10E+21,
+        "EXA": 10E+18,
+        "PETA": 10E+15,
+        "TERA": 10E+12,
+        "GIGA": 10E+9,
+        "MEGA": 10E+6,
+        "KILO": 10E+3,
+        "HECTO": 10E+2,
+        "DECA": 10E+1,
+        "DECI": 10E-1,
+        "CENTI": 10E-2,
+        "MILLI": 10E-3,
+        "MICRO": 10E-6,
+        "NANO": 10E-9,
+        "PICO": 10E-12,
+        "FEMTO": 10E-15,
+        "ATTO": 10E-18,
+        "ZEPTO": 10E-21,
+        "YOCTO": 10E-24,
+        "KIBI": 2E+10,
+        "MEBI": 2E+20,
+        "GIBI": 2E+30,
+        "TEBI": 2E+40,
+        "PEBI": 2E+50,
+        "EXBI": 2E+60,
+        "ZEBI": 2E+70,
+        "YOBI": 2E+80
+    }
+}
