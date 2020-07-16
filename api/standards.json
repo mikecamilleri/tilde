@@ -5,11 +5,15 @@
                 "name": "Weight"
             },
             "validation": {
-                "requiredValueType": "FLOAT",
-                "validValueUnits": [
-                    "GRAM",
-                    "POUND"
-                ]
+                "gqlFeatureType": "FloatFeature",
+                "fields": {
+                    "unit": {
+                        "valid": [
+                            "GRAM",
+                            "POUND"
+                        ]
+                    }
+                }
             }
         },
         "VOLUME": {
@@ -17,12 +21,19 @@
                 "name": "Volume"
             },
             "validation": {
-                "requiredValueType": "FLOAT",
-                "validValueUnits": [
-                    "LITER",
-                    "US_GALLON",
-                    "IMPERIAL_GALLON"
-                ]
+                "gqlFeatureType": "FloatFeature",
+                "validation": {
+                    "gqlFeatureType": "FloatFeature",
+                    "fields": {
+                        "unit": {
+                            "valid": [
+                                "LITER",
+                                "US_GALLON",
+                                "IMPERIAL_GALLON"
+                            ]
+                        }
+                    }
+                }
             }
         },
         "LENGTH": {
@@ -30,15 +41,19 @@
                 "name": "Length"
             },
             "validation": {
-                "requiredValueType": "FLOAT",
-                "validValueUnits": [
-                    "METER",
-                    "INCH",
-                    "FOOT",
-                    "YARD",
-                    "STATUTE_MILE",
-                    "NAUTICAL_MILE"
-                ]
+                "gqlFeatureType": "FloatFeature",
+                "fields": {
+                    "unit": {
+                        "valid": [
+                            "METER",
+                            "INCH",
+                            "FOOT",
+                            "YARD",
+                            "STATUTE_MILE",
+                            "NAUTICAL_MILE"
+                        ]
+                    }
+                }
             }
         },
         "TEMPERATURE": {
@@ -46,12 +61,16 @@
                 "name": "Temperature"
             },
             "validation": {
-                "requiredValueType": "FLOAT",
-                "validValueUnits": [
-                    "KELVIN",
-                    "DEGREE_CELSIUS",
-                    "DEGREE_FAHRENHEIT"
-                ]
+                "gqlFeatureType": "FloatFeature",
+                "fields": {
+                    "unit": {
+                        "valid": [
+                            "KELVIN",
+                            "DEGREE_CELSIUS",
+                            "DEGREE_FAHRENHEIT"
+                        ]
+                    }
+                }
             }
         },
         "PRESSURE": {
@@ -59,16 +78,20 @@
                 "name": "Pressure"
             },
             "validation": {
-                "requiredValueType": "FLOAT",
-                "validValueUnits": [
-                    "PASCAL",
-                    "BAR",
-                    "STANDARD_ATMOSPHERE",
-                    "TORR",
-                    "POUND_PER_SQUARE_INCH",
-                    "METER_OF_MERCURY",
-                    "INCH_OF_MERCURY"
-                ]
+                "gqlFeatureType": "FloatFeature",
+                "fields": {
+                    "unit": {
+                        "valid": [
+                            "PASCAL",
+                            "BAR",
+                            "STANDARD_ATMOSPHERE",
+                            "TORR",
+                            "POUND_PER_SQUARE_INCH",
+                            "METER_OF_MERCURY",
+                            "INCH_OF_MERCURY"
+                        ]
+                    }
+                }
             }
         },
         "ANGLE": {
@@ -76,11 +99,15 @@
                 "name": "Angle"
             },
             "validation": {
-                "requiredValueType": "FLOAT",
-                "validValueUnits": [
-                    "RADIAN",
-                    "DEGREE"
-                ]
+                "gqlFeatureType": "FloatFeature",
+                "fields": {
+                    "unit": {
+                        "valid": [
+                            "RADIAN",
+                            "DEGREE"
+                        ]
+                    }
+                }
             }
         },
         "SWITCH": {
@@ -89,11 +116,16 @@
                 "description": "A simple on/off switch."
             },
             "validation": {
-                "requiredValueType": "STRING",
-                "requiredValueOptions": [
-                    "ON",
-                    "OFF"
-                ]
+                "gqlFeatureType": "StringFeature",
+                "fields": {
+                    "options": {
+                        "required": [
+                            "ON",
+                            "OFF"
+                        ]
+                    },
+                    "valid": {}
+                }
             }
         },
         "THERMOSTAT_MODE": {
@@ -102,44 +134,57 @@
                 "description": "The operating mode of a thermostat."
             },
             "validation": {
-                "requiredValueType": "STRING",
-                "requiredValueOptions": [
-                    "HEAT",
-                    "AUTO",
-                    "COOL",
-                    "OFF"
-                ]
+                "gqlFeatureType": "StringFeature",
+                "fields": {
+                    "options": {
+                        "required": [
+                            "HEAT",
+                            "COOL",
+                            "AUTO",
+                            "OFF"
+                        ]
+                    },
+                    "valid": {}
+                }
             }
         }
     },
-    "unitPrefixes": [
-        "YOTTA",
-        "ZETTA",
-        "EXA",
-        "PETA",
-        "TERA",
-        "GIGA",
-        "MEGA",
-        "KILO",
-        "HECTO",
-        "DECA",
-        "DECI",
-        "CENTI",
-        "MILLI",
-        "MICRO",
-        "NANO",
-        "PICO",
-        "FEMTO",
-        "ATTO",
-        "ZEPTO",
-        "YOCTO",
-        "KIBI",
-        "MEBI",
-        "GIBI",
-        "TEBI",
-        "PEBI",
-        "EXBI",
-        "ZEBI",
-        "YOBI"
-    ]
+    "general": {
+        "validation": {
+            "fields": {
+                "unitPrefix": {
+                    "valid": [
+                        "YOTTA",
+                        "ZETTA",
+                        "EXA",
+                        "PETA",
+                        "TERA",
+                        "GIGA",
+                        "MEGA",
+                        "KILO",
+                        "HECTO",
+                        "DECA",
+                        "DECI",
+                        "CENTI",
+                        "MILLI",
+                        "MICRO",
+                        "NANO",
+                        "PICO",
+                        "FEMTO",
+                        "ATTO",
+                        "ZEPTO",
+                        "YOCTO",
+                        "KIBI",
+                        "MEBI",
+                        "GIBI",
+                        "TEBI",
+                        "PEBI",
+                        "EXBI",
+                        "ZEBI",
+                        "YOBI"
+                    ]
+                }
+            }
+        }
+    }
 }
