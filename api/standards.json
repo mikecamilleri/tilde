@@ -5,7 +5,7 @@
                 "name": "Weight"
             },
             "validation": {
-                "gqlFeatureType": "FloatFeature",
+                "basicValueType": "FLOAT",
                 "fields": {
                     "unit": {
                         "valid": [
@@ -21,7 +21,7 @@
                 "name": "Volume"
             },
             "validation": {
-                "gqlFeatureType": "FloatFeature",
+                "basicValueType": "FLOAT",
                 "validation": {
                     "gqlFeatureType": "FloatFeature",
                     "fields": {
@@ -41,7 +41,7 @@
                 "name": "Length"
             },
             "validation": {
-                "gqlFeatureType": "FloatFeature",
+                "basicValueType": "FLOAT",
                 "fields": {
                     "unit": {
                         "valid": [
@@ -61,7 +61,7 @@
                 "name": "Temperature"
             },
             "validation": {
-                "gqlFeatureType": "FloatFeature",
+                "basicValueType": "FLOAT",
                 "fields": {
                     "unit": {
                         "valid": [
@@ -78,7 +78,7 @@
                 "name": "Pressure"
             },
             "validation": {
-                "gqlFeatureType": "FloatFeature",
+                "basicValueType": "FLOAT",
                 "fields": {
                     "unit": {
                         "valid": [
@@ -99,7 +99,7 @@
                 "name": "Angle"
             },
             "validation": {
-                "gqlFeatureType": "FloatFeature",
+                "basicValueType": "FLOAT",
                 "fields": {
                     "unit": {
                         "valid": [
@@ -116,7 +116,7 @@
                 "description": "A simple on/off switch."
             },
             "validation": {
-                "gqlFeatureType": "StringFeature",
+                "basicValueType": "STRING",
                 "fields": {
                     "options": {
                         "required": [
@@ -134,7 +134,7 @@
                 "description": "The operating mode of a thermostat."
             },
             "validation": {
-                "gqlFeatureType": "StringFeature",
+                "basicValueType": "STRING",
                 "fields": {
                     "options": {
                         "required": [
