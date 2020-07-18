@@ -9,7 +9,7 @@ type Gateway {
     model: String
     serialNumber: String
     softwareVersion: String
-    protocols: [GatewayProtocol!]!
+    # protocols: [GatewayProtocol!]!
     auth: Auth
     features: [Feature!]
 }
@@ -21,7 +21,7 @@ type GatewayAuth {
     id: ID!
     username: String!
     password: String!
-    protocols: [GatewayProtocol!]!
+    # protocols: [GatewayProtocol!]!
     listenOn: String
     reportOn: String
     createdDateTime: DateTime
@@ -31,11 +31,11 @@ type GatewayAuth {
 """
 The set of protocols which may be implmented by a gateway.
 """
-enum GatewayProtocol {
-    AMQP
-    MQTT
-    STOMP
-}
+# enum GatewayProtocol {
+#     AMQP
+#     MQTT
+#     STOMP
+# }
 
 """
 A device.
@@ -48,14 +48,11 @@ type Device {
     model: String
     serialNumber: String
     softwareVersion: String
-    # locations: [Location!]
+    # tags: [Tag!]
     features: [Feature!]
 }
 
-# 
-# A location in which a device may exist.
-# 
-# type Location {
+# type Tag {
 #     id: ID!
 #     name: String
 #     description: String
