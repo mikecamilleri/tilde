@@ -1,154 +1,4 @@
 {
-    "features": {
-        "WEIGHT": {
-            "meta": {
-                "name": "Weight"
-            },
-            "validation": {
-                "basicValueType": "FLOAT",
-                "fields": {
-                    "unit": {
-                        "valid": [
-                            "GRAM",
-                            "POUND"
-                        ]
-                    }
-                }
-            }
-        },
-        "VOLUME": {
-            "meta": {
-                "name": "Volume"
-            },
-            "validation": {
-                "basicValueType": "FLOAT",
-                "validation": {
-                    "gqlFeatureType": "FloatFeature",
-                    "fields": {
-                        "unit": {
-                            "valid": [
-                                "LITER",
-                                "US_GALLON",
-                                "IMPERIAL_GALLON"
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "LENGTH": {
-            "meta": {
-                "name": "Length"
-            },
-            "validation": {
-                "basicValueType": "FLOAT",
-                "fields": {
-                    "unit": {
-                        "valid": [
-                            "METER",
-                            "INCH",
-                            "FOOT",
-                            "YARD",
-                            "STATUTE_MILE",
-                            "NAUTICAL_MILE"
-                        ]
-                    }
-                }
-            }
-        },
-        "TEMPERATURE": {
-            "meta": {
-                "name": "Temperature"
-            },
-            "validation": {
-                "basicValueType": "FLOAT",
-                "fields": {
-                    "unit": {
-                        "valid": [
-                            "KELVIN",
-                            "DEGREE_CELSIUS",
-                            "DEGREE_FAHRENHEIT"
-                        ]
-                    }
-                }
-            }
-        },
-        "PRESSURE": {
-            "meta": {
-                "name": "Pressure"
-            },
-            "validation": {
-                "basicValueType": "FLOAT",
-                "fields": {
-                    "unit": {
-                        "valid": [
-                            "PASCAL",
-                            "BAR",
-                            "STANDARD_ATMOSPHERE",
-                            "TORR",
-                            "POUND_PER_SQUARE_INCH",
-                            "METER_OF_MERCURY",
-                            "INCH_OF_MERCURY"
-                        ]
-                    }
-                }
-            }
-        },
-        "ANGLE": {
-            "meta": {
-                "name": "Angle"
-            },
-            "validation": {
-                "basicValueType": "FLOAT",
-                "fields": {
-                    "unit": {
-                        "valid": [
-                            "RADIAN",
-                            "DEGREE"
-                        ]
-                    }
-                }
-            }
-        },
-        "SWITCH": {
-            "meta": {
-                "name": "Switch",
-                "description": "A simple on/off switch."
-            },
-            "validation": {
-                "basicValueType": "STRING",
-                "fields": {
-                    "options": {
-                        "required": [
-                            "ON",
-                            "OFF"
-                        ]
-                    },
-                    "valid": {}
-                }
-            }
-        },
-        "THERMOSTAT_MODE": {
-            "meta": {
-                "name": "Thermostat Mode",
-                "description": "The operating mode of a thermostat."
-            },
-            "validation": {
-                "basicValueType": "STRING",
-                "fields": {
-                    "options": {
-                        "required": [
-                            "HEAT",
-                            "COOL",
-                            "AUTO",
-                            "OFF"
-                        ]
-                    },
-                    "valid": {}
-                }
-            }
-        }
-    },
     "general": {
         "validation": {
             "fields": {
@@ -183,6 +33,177 @@
                         "ZEBI",
                         "YOBI"
                     ]
+                },
+                "valueType": {
+                    "valid": [
+                        "BOOLEAN",
+                        "STRING",
+                        "INTEGER",
+                        "FLOAT"
+                    ]
+                }
+            }
+        }
+    },
+    "features": {
+        "WEIGHT": {
+            "meta": {
+                "name": "Weight"
+            },
+            "validation": {
+                "fields": {
+                    "valueType": {
+                        "required": "FLOAT"
+                    },
+                    "unit": {
+                        "valid": [
+                            "GRAM",
+                            "POUND"
+                        ]
+                    }
+                }
+            }
+        },
+        "VOLUME": {
+            "meta": {
+                "name": "Volume"
+            },
+            "validation": {
+                "fields": {
+                    "valueType": {
+                        "required": "FLOAT"
+                    },
+                    "unit": {
+                        "valid": [
+                            "LITER",
+                            "US_GALLON",
+                            "IMPERIAL_GALLON"
+                        ]
+                    }
+                }
+            }
+        },
+        "LENGTH": {
+            "meta": {
+                "name": "Length"
+            },
+            "validation": {
+                "fields": {
+                    "valueType": {
+                        "required": "FLOAT"
+                    },
+                    "unit": {
+                        "valid": [
+                            "METER",
+                            "INCH",
+                            "FOOT",
+                            "YARD",
+                            "STATUTE_MILE",
+                            "NAUTICAL_MILE"
+                        ]
+                    }
+                }
+            }
+        },
+        "TEMPERATURE": {
+            "meta": {
+                "name": "Temperature"
+            },
+            "validation": {
+                "fields": {
+                    "valueType": {
+                        "required": "FLOAT"
+                    },
+                    "unit": {
+                        "valid": [
+                            "KELVIN",
+                            "DEGREE_CELSIUS",
+                            "DEGREE_FAHRENHEIT"
+                        ]
+                    }
+                }
+            }
+        },
+        "PRESSURE": {
+            "meta": {
+                "name": "Pressure"
+            },
+            "validation": {
+                "fields": {
+                    "valueType": {
+                        "required": "FLOAT"
+                    },
+                    "unit": {
+                        "valid": [
+                            "PASCAL",
+                            "BAR",
+                            "STANDARD_ATMOSPHERE",
+                            "TORR",
+                            "POUND_PER_SQUARE_INCH",
+                            "METER_OF_MERCURY",
+                            "INCH_OF_MERCURY"
+                        ]
+                    }
+                }
+            }
+        },
+        "ANGLE": {
+            "meta": {
+                "name": "Angle"
+            },
+            "validation": {
+                "fields": {
+                    "valueType": {
+                        "required": "FLOAT"
+                    },
+                    "unit": {
+                        "valid": [
+                            "RADIAN",
+                            "DEGREE"
+                        ]
+                    }
+                }
+            }
+        },
+        "SWITCH": {
+            "meta": {
+                "name": "Switch",
+                "description": "A simple on/off switch."
+            },
+            "validation": {
+                "fields": {
+                    "valueType": {
+                        "required": "STRING"
+                    },
+                    "options": {
+                        "required": [
+                            "ON",
+                            "OFF"
+                        ]
+                    },
+                    "valid": {}
+                }
+            }
+        },
+        "THERMOSTAT_MODE": {
+            "meta": {
+                "name": "Thermostat Mode",
+                "description": "The operating mode of a thermostat."
+            },
+            "validation": {
+                "fields": {
+                    "valueType": {
+                        "required": "STRING"
+                    },
+                    "options": {
+                        "required": [
+                            "HEAT",
+                            "COOL",
+                            "AUTO",
+                            "OFF"
+                        ]
+                    },
+                    "valid": {}
                 }
             }
         }

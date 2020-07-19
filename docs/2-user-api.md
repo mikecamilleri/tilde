@@ -162,7 +162,7 @@ Returns a specific feature.
     "name": "",
     "description": "",
     "standard": "",
-    "type": "",
+    "valueType": "",
     "settable": true,
     "settingValueRange": {
         "unitPrefix": "",
@@ -193,11 +193,11 @@ Returns a specific feature.
 
 Features will have either a `deviceId` or a `gatewayId` depending on whether they are on a gateway or device.
 
-`type` is the basic type (`STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`) of the setting and reading `value` fields (shown as string here). 
+`valueType` is the basic type (`STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`) of the setting and reading `value` fields (shown as string here). 
 
 Not all features will return all of these fields. `settingValueRange` is used only to set valid ranges for `INTEGER` and `FLOAT` features. The `options` array is used to define a set of acceptable `STRING` values only. 
 
-`standard` refers to predefined set of restrictions on a feature. As an example, there may be a `TEMPERATURE` standard that requires the type be `FLOAT` and that any `unit` be `DEGREE_CELSIUS`, `DEGREE_FAHRENHEIT`, or `KELVIN`.
+`standard` refers to predefined set of restrictions on a feature. As an example, there may be a `TEMPERATURE` standard that requires the `valueType` to be `FLOAT` and that any `unit` be `DEGREE_CELSIUS`, `DEGREE_FAHRENHEIT`, or `KELVIN`.
 
 ### `PATCH`
 

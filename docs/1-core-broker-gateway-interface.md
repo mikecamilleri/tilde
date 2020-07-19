@@ -65,37 +65,7 @@ Upon first connection, a _gateway_ should send information about it itself to th
         "model": "",
         "serialNumber": "",
         "softwareVersion": "",
-        "features": {
-            "<id>": {
-                "name": "",
-                "description": "",
-                "standard": "",
-                "type": "",
-                "settable": true,
-                "settingValueRange": {
-                    "unitPrefix": "",
-                    "unit": "",
-                    "min": 0,
-                    "max": 0
-                },
-                "options": [
-                    "",
-                    ""
-                ],
-                "setting": {
-                    "dateTime": "",
-                    "unitPrefix": "",
-                    "unit": "",
-                    "value": ""
-                },
-                "reading": {
-                    "dateTime": "",
-                    "unitPrefix": "",
-                    "unit": "",
-                    "value": ""
-                }
-            }
-        },
+        "features": {},
     },
     "devices": {
         "<id>": {
@@ -107,7 +77,7 @@ Upon first connection, a _gateway_ should send information about it itself to th
                     "name": "",
                     "description": "",
                     "standard": "",
-                    "type": "",
+                    "valueType": "",
                     "settable": true,
                     "settingValueRange": {
                         "unitPrefix": "",
