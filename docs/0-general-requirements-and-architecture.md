@@ -55,7 +55,7 @@ Additionally, the history of device state should be stored in a database. This w
 
 ### External Interfaces
 
-The _core_ has two primary interfaces: the User API and the Gateway API. The User API will be a GraphQL API and will allow for the configuration and control of the _core_, _gateways_, and _devices_. The User API should be the only way the users need to interact with the system. The Gateway API will implement AMQP and communicate with _gateways_ via the _message broker_.
+The _core_ has two primary interfaces: the User API and the Gateway API. The User API will be an HTTP REST API and will allow for the configuration and control of the _core_, _gateways_, and _devices_. The User API should be the only way the users need to interact with the system. The Gateway API will implement AMQP and communicate with _gateways_ via the _message broker_.
 
 ### Internal Devices
 
@@ -67,7 +67,7 @@ A data structure that stores the current states of _devices_.
 
 ### Desired State
 
-_NOTE: I am actively redesigning the structure of desired state. The primary issue with the previous "layered state" is that it doesn't handle manual overrides (e.g. turning on a light switch) very well. 
+_NOTE: I am actively redesigning the structure of desired state. The primary issue with the previous "layered state" is that it doesn't handle manual overrides (e.g. turning on a light switch) very well._
 
 ### Rules
 
