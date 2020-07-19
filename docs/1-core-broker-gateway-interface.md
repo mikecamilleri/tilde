@@ -50,253 +50,141 @@ User                             Core/RabbitMQ                           Gateway
 
 ## Routine Date Exchange
 
-_NOTE: This information is out of date and needs to be updated!_
-
 Similar to the connection flow described above, the routine data exchange between the _core_ and _gateways_ is designed such that _gateways_ can be implemented as simply as possible. 
 
-_Gateways_ are responsible for initiating and maintaining a WebSocket connection with the _core_. All data exchange occurs over that connection. This allows the _gateways_ to only have to implement an WebSocket client and prevents them from having to advertise themselves using mDNS/DNS-SD.
+The credentials sent to the _gateway_ during registration, include both a channel for listening and a channel for reporting. 
 
-All communications between the _core_ and a _gateway_ fit the following template:
+### Gateway to Core
 
-```json
-{
-    "gateways": [],
-    "devices": [],
-    "errors": []
-}
-```
-
-Only relevant, non-empty elements ("properties" in JSON lingo) should to be included in each request. A `description` element with an empty value (`""`) would imply that it should be erased. _Gateways_ are not responsible for maintaining any information about the state of the core across connection sessions, other than their login credentials. Every time a `gateway` connects to the core, it should send complete information about itself and its _devices_ to the core as if it had never connected before. The core will match `gateways`, `devices`, and features across sessions by their `id` values. 
-
-It may seem odd that `gateways` holds an array. This is done mostly for consistency with the other root-level elements. In some cases, however, it may make sense for multiple software _gateways_ to share a single WebSocket connection and thus a single set of authentication credentials. For example, a hardware device that is able to connect to ZigBee and Z-Wave _devices_ may want to define those protocols as separate _gateways_ but share a single registration flow, share a single set of credentials, and use a single WebSocket connection. 
-
-### `gateways`
-
-The `gateways` array contains objects in the following format:
+Upon first connection, a _gateway_ should send information about it itself to the core via its reporting channel in the following format. An `id` must be unique within the parent level. I.e. two _devices_ may have _features_ with an `id` of `1`, but no device amy have two features with an `id` of `1`
 
 ```json
 {
-    "hardwareId": "a-serial-number-or-similar",
-    "id": "a-universally-unique-id-self-assigned-by-the-gateway",
-    "name": "A Friendly Name",
-    "description": "A friendly description of what the gateway does.",
-    "connected": true,
-    "features": []
-}
-```
-
-Before a _gateway_ disconnects from the core, if possible, it is polite for it to set its `connected` status to `false`.
-
-### `devices`
-
-The `devices` array contains objects in the following format:
-
-```json
-{
-    "hardwareId": "a-serial-number-or-similar",
-    "gatewayId": "the-id-of-the-gateway-this-device-is-connected-to",
-    "id": "a-unique-id-within-the-gateway",
-    "name": "A Friendly Name",
-    "description": "A friendly description of what this device does.",
-    "features": []
-}
-```
-
-### `features`
-
-`gateways` and `devices` have `features`.
-
-```json
-{
-    "id": "a-unique-id-within-the-device",
-    "name": "A Friendly Name",
-    "description": "A friendly description of what this feature does.",
-    "definition": {
-        "standard": "the-name-of-the-standard-feature-type",
-        "unit": "",
-    },
-    "setting": {
-        "value": ,
-    },
-    "readings": [
-        {
-            "value": ,
-            "time": "2019-04-22T21:03:49+00:00"
-        }
-    ],
-}
-```
-
-The above template represents a standardized _feature_, if the _feature_ were a custom feature, the `definition` object would contain:
-
-```json
-    "definition": {
-        "standard": "custom",
-        "name": "A Friendly Name for the Feature Type",
-        "description": "A friendly description of the feature type.",
-        "units": [""],
-        "jsonType": "",
-        "min": ,
-        "max": ,
-        "options": [""],
-        "settable": true
-    }
-```
-
-Standard _features_ will be defined in a similar way and will be a part of the standard for each API version. Using standard features enables actions such as "turn off all the lights". `Readings` is an array so that _gateways_ may provide historic readings if they or the device become disconnected or if the device is designed to only report intermittently. 
-
-A few quick notes:
-
-- `jsonType` may be: "boolean", "number," or "string."
-- `units` are something like "fahrenheit," "percent," or "volt". I am not sure yet whether I want the whole name spelled out or whether a standard abbreviations will be used. In either case these will need to be defined somewhere -- probably along with the the standard _features_.
-- `min` and `max` are used to set bounds for `value` when `jsonType` is "number."
-- `options` is a list of valid `value` strings when `jsonType` is "string."
-- Some _features_ may not be settable. A device providing a weather report, for example, won't have settable _features_.
-- Some standard _features_ may be mandatory. One such feature may be "connected".
-
-Below are some example hypothetical `device` objects:
-
-```json
-{
-    "devices": [
-        {
-            "hardwareId": "a-serial-number-or-similar",
-            "gatewayId": "the-id-of-the-gateway-this-device-is-connected-to",
-            "id": "a-unique-id-within-the-gateway",
-            "name": "Porch Light",
-            "description": "",
-            "features": [
-                {
-                    "id": "a-unique-id-within-the-device",
-                    "name": "Switch",
-                    "description": "",
-                    "definition": {
-                        "standard": "switch-binary"
-                    },
-                    "readings": [
-                        {
-                            "value": "on",
-                            "time": "2019-04-22T21:03:49+00:00"
-                        }
-                    ],
-                    "setting": {
-                        "value": "on"
-                    }
+    "gateway": {
+        "manufacturer": "",
+        "model": "",
+        "serialNumber": "",
+        "softwareVersion": "",
+        "features": {
+            "<id>": {
+                "name": "",
+                "description": "",
+                "standard": "",
+                "type": "",
+                "settable": true,
+                "settingValueRange": {
+                    "unitPrefix": "",
+                    "unit": "",
+                    "min": 0,
+                    "max": 0
+                },
+                "options": [
+                    "",
+                    ""
+                ],
+                "setting": {
+                    "dateTime": "",
+                    "unitPrefix": "",
+                    "unit": "",
+                    "value": ""
+                },
+                "reading": {
+                    "dateTime": "",
+                    "unitPrefix": "",
+                    "unit": "",
+                    "value": ""
                 }
-            ]
+            }
         },
-        {
-            "hardwareId": "a-serial-number-or-similar",
-            "gatewayId": "the-id-of-the-gateway-this-device-is-connected-to",
-            "id": "a-unique-id-within-the-gateway",
-            "description": "",
-            "features": [
-                {
-                    "id": "a-unique-id-within-the-device",
-                    "name": "Ambient Temperature",
+    },
+    "devices": {
+        "<id>": {
+            "manufacturer": "",
+            "model": "",
+            "softwareVersion": "",
+            "features": {
+                "<id>": {
+                    "name": "",
                     "description": "",
-                    "definiton": {
-                        "standard": "thermometer",
-                        "unit": "fahrenheit"
-                    },
-                    "readings": [
-                        {
-                            "value": 65,
-                            "time": "2019-04-22T21:03:49+00:00"
-                        }
-                    ]
-                },
-                {
-                    "id": "a-unique-id-within-the-device",
-                    "name": "Temperature Setting",
-                    "description": "",
-                    "definiton": {
-                        "standard": "thermostat-temperature-setting",
-                        "unit": "fahrenheit"
-                    },
-                    "readings": [
-                        {
-                            "value": 70,
-                            "time": "2019-04-22T21:03:49+00:00"
-                        }
-                    ],
-                    "setting": {
-                        "value": 70
-                    }
-                },
-                {
-                    "id": "a-unique-id-within-the-device",
-                    "name": "Mode",
-                    "description": "",
-                    "definiton": {
-                        "standard": "thermostat-mode"
-                    },
-                    "readings": [
-                        {
-                            "value": "auto",
-                            "time": "2019-04-22T21:03:49+00:00"
-                        }
-                    ],
-                    "setting": {
-                        "value": "auto"
-                    }
-                }
-            ]
-        },
-        {
-            "hardwareId": "a-serial-number-or-similar",
-            "gatewayId": "the-id-of-the-gateway-this-device-is-connected-to",
-            "id": "a-unique-id-within-the-gateway",
-            "name": "Party Lights",
-            "description": "Get the party started with this custom device that controls party lights (whatever those are)",
-            "features": [
-                {
-                    "id": "a-unique-id-within-the-device",
-                    "name": "mode",
-                    "description": "",
-                    "definition": {
-                        "standard": "custom",
-                        "jsonType": "string",
-                        "options": ["flash", "fade", "wave"],
-                        "settable": true
-                    },
-                    "readings": [
-                        {
-                            "value": "flash",
-                            "time": "2019-04-22T21:03:49+00:00"
-                        }
-                    ],
-                    "setting": {
-                        "value": "flash"
-                    }
-                },
-                {
-                    "id": "a-unique-id-within-the-device",
-                    "name": "intensity",
-                    "description": "",
-                    "standard": "custom",
-                    "definition": {
-                        "jsonType": "number",
+                    "standard": "",
+                    "type": "",
+                    "settable": true,
+                    "settingValueRange": {
+                        "unitPrefix": "",
+                        "unit": "",
                         "min": 0,
-                        "max": 9,
-                        "settable": true
+                        "max": 0
                     },
-                    "readings": [
-                        {
-                            "value": 5,
-                            "time": "2019-04-22T21:03:49+00:00"
-                        }
+                    "options": [
+                        "",
+                        ""
                     ],
                     "setting": {
-                        "value": 5
+                        "dateTime": "",
+                        "unitPrefix": "",
+                        "unit": "",
+                        "value": ""
+                    },
+                    "reading": {
+                        "dateTime": "",
+                        "unitPrefix": "",
+                        "unit": "",
+                        "value": ""
                     }
-                },
-            ]
-        },
-    ]
+                }
+            }
+        }
+    }
 }
 ```
 
-## Errors
+See the User API documentation for more on features. 
 
-TODO ...
+All subsequent communications will be in the same format and a subset of the above. For example, to update a single reading, a _gateway_ may send:
+
+```json
+{
+    "devices": {
+        "some-unique-id": {
+            "features": {
+                "some-other-unique-id": {
+                    "reading": {
+                        "dateTime": "2020-07-19T15:07:33-04:00",
+                        "unit": "DEGREES_FAHRENHEIT",
+                        "value": 78
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+or, unformatted:
+
+```json
+{"devices":{"some-unique-id":{"features":{"some-other-unique-id":{"reading":{"dateTime":"2020-07-19T15:07:33-04:00","unit":"DEGREES_FAHRENHEIT","value":78}}}}}}
+```
+
+The core will be flexable with its parsing of the JSON, so the `value` could just as well ve sent as a string.
+
+### Core to Gateway
+
+The _core_ will send setting updates to a _gateway_  on the `gateway`'s listening channel and in the following format:
+
+```json
+{
+    "devices": {
+        "some-unique-id": {
+            "features": {
+                "some-other-unique-id": {
+                    "setting": {
+                        "unit": "DEGREES_FAHRENHEIT",
+                        "value": 72
+                    }
+                }
+            }
+        }
+    }
+}
+```
