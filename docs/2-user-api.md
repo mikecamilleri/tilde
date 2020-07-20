@@ -22,7 +22,9 @@ Returns an array of gateways. Any field can be queried, which will limit the res
 
 ```json
 {
-    "gateways": []
+    "gateways": [
+        {}
+    ]
 }
 ```
 
@@ -52,7 +54,9 @@ Returns a specific gateway. Features on a gateway will typically be things like 
     "model": "",
     "serialNumber": "",
     "softwareVersion": "",
-    "features": []
+    "features": [
+        {}
+    ]
 }
 ```
 
@@ -64,7 +68,9 @@ A `PATCH` request may be used to update the following fields. Only specific fiel
 {
     "name": "",
     "description": "",
-    "features": []
+    "features": [
+        {}
+    ]
 }
 ```
 
@@ -76,7 +82,9 @@ Returns an array of devices. Any field can be queried, which will limit the resu
 
 ```json
 {
-    "devices": []
+    "devices": [
+        {}
+    ]
 }
 ```
 
@@ -108,7 +116,9 @@ Returns a specific device. See below for the structure of a feature.
     "model": "",
     "serialNumber": "",
     "softwareVersion": "",
-    "features": []
+    "features": [
+        {},
+    ]
 }
 ```
 
@@ -120,7 +130,9 @@ A `PATCH` request may be used to update the following fields. Only specific fiel
 {
     "name": "",
     "description": "",
-    "features": []
+    "features": [
+        {}
+    ]
 }
 ```
 
@@ -132,7 +144,9 @@ Returns an array of features. Any field can be queried, which will limit the res
 
 ```json
 {
-    "features": []
+    "features": [
+        {}
+    ]
 }
 ```
 
@@ -148,7 +162,7 @@ Multiple features may be updated at once via this endpoint by using a `PATCH` re
 ```
 
 
-## `features/<id>`
+## `features/<id>`, `gateways/<id>/features/<id>`, `devices/<id>/features/<id>`
 
 ### `GET`
 
@@ -223,14 +237,140 @@ An endpoint for getting historical setting and reading data for a feature or fea
 
 TODO: JSON schema and reconsider endpoint name and location. Better on a feature?
 
-## `gateway-otp`
+## `gateway-otps`
 
-One time passwords for gateway pairing.
+This endpoint allows for the creation of one-time passwords (OTP) for _gateways_ to use during their initial pairing with the _core_. These passwords expire after a particular period of time determined by the _core_ and are deleted after a single use. 
 
-TODO: JSON schema.
+### `POST`
 
-## `auths`
+The `POST` request only contains the unique manufacturer assigned ID of the Gateway in the `username` field. 
+
+```json
+{
+    "username": ""
+}
+```
+
+The API responds with the following. `expires` contains an RFC 3339 datetime value indicating when the OTP will expire.
+
+```json
+{
+    "id": "",
+    "username": "",
+    "password": "",
+    "expires": ""
+}
+```
+
+## `gateway-otps/<id>`
+
+### `DELETE`
+
+Deletes the OTP.
+
+## `gateway-auths`
+
+### `GET`
+
+The `password` field isn't returned for obvious reasons. 
+
+```json
+{
+    "gatewayAuths": [
+        {
+            "id": "",
+            "username": "",
+            "listenOn": "",
+            "reportOn": ""
+        }
+    ]
+}
+```
+
+## `gateway-auths/<id>`
+
+### `GET`
+
+```json
+{
+    "id": "",
+    "username": "",
+    "listenOn": "",
+    "reportOn": ""
+}
+```
+
+### `DELETE`
+
+Deletes the gateway auth.
+
+## `user-auths`
 
 Auths for users of the User API.
 
-TODO: JSON schema.
+### `POST`
+
+```json
+{
+    "username": "",
+    "password": "",
+    "roles": [
+        ""
+    ]
+}
+```
+
+### `GET`
+
+```json
+
+{
+    "userAuths": [
+        {
+            "id": "",
+            "username": "",
+            "roles": [
+                ""
+            ]
+        }
+    ]
+}
+```
+
+### `PATCH`
+
+```json
+{
+    "<id>": {},
+    "<id>": {}
+}
+```
+
+## `user-auths/<id>`
+
+### `GET`
+
+```json
+{
+    "id": "",
+    "username": "",
+    "roles": [
+        ""
+    ]
+}
+```
+
+### `PATCH`
+```json
+{
+    "username": "",
+    "password": "",
+    "roles": [
+        ""
+    ]
+}
+```
+
+### `DELETE`
+
+Deletes the user auth.

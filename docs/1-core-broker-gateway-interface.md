@@ -17,7 +17,7 @@ Gateways need a way to gain authorization to connect to the message broker.
 ```
 User                             Core/RabbitMQ                           Gateway
   |                                    |                                     |
-1.|<------------------- displays the unique device ID (e.g. serial number) --|
+1.|<------------------ displays the unique gateway ID (e.g. serial number) --|
   |                                    |                                     |
 2.|-- enters uniq. ID of gateway ----->|                                     |
   |                                    |                                     |
