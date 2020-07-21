@@ -64,14 +64,12 @@ Upon first connection, a _gateway_ should send information about it itself to th
         "manufacturer": "",
         "model": "",
         "serialNumber": "",
-        "softwareVersion": "",
         "features": {},
     },
     "devices": {
         "<id>": {
             "manufacturer": "",
             "model": "",
-            "softwareVersion": "",
             "features": {
                 "<id>": {
                     "name": "",

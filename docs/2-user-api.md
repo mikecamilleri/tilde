@@ -53,7 +53,6 @@ Returns a specific gateway. Features on a gateway will typically be things like 
     "manufacturer": "",
     "model": "",
     "serialNumber": "",
-    "softwareVersion": "",
     "features": [
         {}
     ]
@@ -115,7 +114,6 @@ Returns a specific device. See below for the structure of a feature.
     "manufacturer": "",
     "model": "",
     "serialNumber": "",
-    "softwareVersion": "",
     "features": [
         {},
     ]
