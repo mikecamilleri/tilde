@@ -28,38 +28,18 @@ These home automation focused user stories are selected to illustrate interactio
 
 ![architecture diagram](architecture.png)
 
-A complete _Tilde_ system consists of seven major types of components.
+A complete _Tilde_ system consists of seven major types of components. Each component is a separate service (service-oriented architecture). 
 
-- **Devices:** _Devices_ can be connected physical objects such as light switches, thermostats, and door sensors. _Devices_ can also be entities on the internet such as a weather report for a certain location or a Twitter feed. 
+- **Devices:** _Devices_ can be connected physical objects such as light switches, thermostats, and door sensors. _Devices_ can also be virtual entities such as a weather report for a certain location or a Twitter feed. _Devices_ communicate with a _gateway_.
 - **Gateways:** _Gateways_ connect to both the _message broker_ and _devices_ and act as an intermediary between them. _Gateways_ will typically implement a single IoT protocol such as Z-Wave, or interact with one or several closely related web services. _Gateways_ are software and may exist on the same hardware as the _core_ or their own hardware.
 - **Message Broker:** The _message broker_ implements one or more protocols (AMQP, MQTT, STOMP) and routes messages between the _gateways_ and _core_.
-- **Core:** The system has a single _core_ which consists of the Automation Factory, Data Layer, and User API.
-- **User Interfaces:** _User interfaces_ connect to the _core_'s User API.
-- **Database:** The _core_'s Data Layer is implemented in a database (not shown).
-- **Configuration Files:** _Configuration files_ (not shown) are used to configure various components of the system.
+- **Core:** The system has a single _core_ which consists of at a minimum the Automation Factory. ("Automation Factory" on diagram)
+- **Data Layer:** The _data layer_ is implemented in a database.
+- **User API:** An HTTP REST API that _user interfaces_ interact with. 
+- **User Interfaces:** Users use _user interfaces_ to interact with the system.
+- **Configuration Files:** Basic system configuration is stored in configuration files (not shown).
 
-## Core Architecture
-
-### General Requirements
-
-In order to perform control and automation functions the _core_ must be able to:
-
-1. Receive information about the state of _devices_.
-2. Store and update a representation of the current state of _devices_.
-3. Store and update a representation of the desired state of the _devices_.
-4. Accept user input regarding the desired state of _devices_. 
-5. Based on the current state of _devices_, determine what the desired state should be.
-6. Control _devices_. 
-
-Additionally, the history of device state should be stored in a database. This will facilitate things such as machine learning later. 
-
-### External Interfaces
-
-The _core_ has two primary interfaces: the User API and the Gateway API. The User API will be an HTTP REST API and will allow for the configuration and control of the _core_, _gateways_, and _devices_. The User API should be the only way the users need to interact with the system. The Gateway API will implement AMQP and communicate with _gateways_ via the _message broker_.
-
-### Internal Devices
-
-The _core_ may have internal _devices_ (not shown). These may include things such as a clock or metronome, network connection information, system diagnostic information (CPU, memory, etc.), and support for notifications.
+## Automation Architecture
 
 ### Current State
 
@@ -73,13 +53,13 @@ _NOTE: I am actively redesigning the structure of desired state. The primary iss
 
 Rules are used to determine what the Desired State should be based on the Current State. 
 
-## Automation Data Flow
+### Automation Data Flow
 
 1. A _gateway_ receives an update from a _device_ regarding its state. 
     - "it is now raining"
 2. The _gateway_ sends a message containing the _device_ state change to the _message broker_.
-3. The _core_ receives the message from the _message broker_. 
-4. The Message Consumer updates the Current State data structure and passage the event to the Automation Engine Engine.
+3. The _automation factory_ receives the message from the _message broker_. 
+4. The Message Consumer updates the Current State data structure and passage the event to the Automation Engine.
 5. The Automation Engine executes Rules and updates the Desired State.
 6. The Message Generator compares Desired State to Current State and sends messages to the _message broker_ addressed to the appropriate _gateways_ requesting that they change the state of one or more of their _devices_.
     - "close windows, turn off irrigation"
