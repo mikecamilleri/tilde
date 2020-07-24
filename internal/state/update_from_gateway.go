@@ -2,8 +2,8 @@ package state
 
 import "encoding/json"
 
-// StateUpdateFromGateway ...
-type StateUpdateFromGateway struct {
+// UpdateFromGateway ...
+type UpdateFromGateway struct {
 	Gateway GatewayUpdateFromGateway
 }
 
@@ -34,10 +34,10 @@ type FeatureUpdateFromGateway struct {
 	// ...
 }
 
-// NewStateUpdateFromGateway unmarshals the JSON update from the gateway into a
+// NewUpdateFromGateway unmarshals the JSON update from the gateway into a
 // StateUpdateFromGateway struct. Extra fields are ignored.
-func NewStateUpdateFromGateway(updateJSONBytes []byte) (StateUpdateFromGateway, error) {
-	u := StateUpdateFromGateway{}
+func NewUpdateFromGateway(updateJSONBytes []byte) (UpdateFromGateway, error) {
+	u := UpdateFromGateway{}
 	if err := json.Unmarshal(updateJSONBytes, &u); err != nil {
 		return u, err
 	}

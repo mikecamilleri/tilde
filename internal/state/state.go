@@ -72,7 +72,7 @@ func (f FeatureID) String() string {
 	return f.ExternalGatewayID + "-" + f.ExternalDeviceID + "-" + f.ExternalFeatureID
 }
 
-func (s *State) validateStateUpdateFromGateway(u *StateUpdateFromGateway) error {
+func (s *State) validateStateUpdateFromGateway(u *UpdateFromGateway) error {
 	// TODO: break this up like updating
 
 	// TODO: validate auth and that gateway is only updating itself (and inherently
@@ -116,7 +116,7 @@ func (s *State) validateFeatureUpdateFromGateway(fu *FeatureUpdateFromGateway) e
 	return nil
 }
 
-func (s *State) updateWithStateUpdateFromGateway(u *StateUpdateFromGateway) error {
+func (s *State) updateWithStateUpdateFromGateway(u *UpdateFromGateway) error {
 	// update gateway and its features
 	s.updateWithGatewayUpdateFromGateway(&u.Gateway)
 
