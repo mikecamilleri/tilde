@@ -61,43 +61,44 @@ Upon first connection, a _gateway_ should send information about it itself to th
 ```json
 {
     "gateway": {
+        "<id>": "",
         "manufacturer": "",
         "model": "",
         "serialNumber": "",
         "features": {},
-    },
-    "devices": {
-        "<id>": {
-            "manufacturer": "",
-            "model": "",
-            "features": {
-                "<id>": {
-                    "name": "",
-                    "description": "",
-                    "standard": "",
-                    "valueType": "",
-                    "settable": true,
-                    "settingValueRange": {
-                        "unitPrefix": "",
-                        "unit": "",
-                        "min": 0,
-                        "max": 0
-                    },
-                    "options": [
-                        "",
-                        ""
-                    ],
-                    "setting": {
-                        "dateTime": "",
-                        "unitPrefix": "",
-                        "unit": "",
-                        "value": ""
-                    },
-                    "reading": {
-                        "dateTime": "",
-                        "unitPrefix": "",
-                        "unit": "",
-                        "value": ""
+        "devices": {
+            "<id>": {
+                "manufacturer": "",
+                "model": "",
+                "features": {
+                    "<id>": {
+                        "name": "",
+                        "description": "",
+                        "standard": "",
+                        "valueType": "",
+                        "settable": true,
+                        "settingValueRange": {
+                            "unitPrefix": "",
+                            "unit": "",
+                            "min": 0,
+                            "max": 0
+                        },
+                        "options": [
+                            "",
+                            ""
+                        ],
+                        "setting": {
+                            "dateTime": "",
+                            "unitPrefix": "",
+                            "unit": "",
+                            "value": ""
+                        },
+                        "reading": {
+                            "dateTime": "",
+                            "unitPrefix": "",
+                            "unit": "",
+                            "value": ""
+                        }
                     }
                 }
             }
