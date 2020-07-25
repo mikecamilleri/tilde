@@ -1,7 +1,7 @@
 package state
 
 import (
-	"encoding/json"
+	"encoding/gob"
 	"os"
 )
 
@@ -15,7 +15,8 @@ func (s *State) Persist(path string) error {
 	defer f.Close()
 
 	// encode and write to the file
-	enc := json.NewEncoder(f)
+	// enc := json.NewEncoder(f)
+	enc := gob.NewEncoder(f) // I ❤️ Go! What an easy change!
 	if err = enc.Encode(s); err != nil {
 		return err
 	}
@@ -33,7 +34,8 @@ func (s *State) Restore(path string) error {
 	defer f.Close()
 
 	// decode into the state
-	dec := json.NewDecoder(f)
+	// dec := json.NewDecoder(f)
+	dec := gob.NewDecoder(f) // I ❤️ Go! What an easy change!
 	if err := dec.Decode(s); err != nil {
 		return err
 	}
