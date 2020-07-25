@@ -59,9 +59,7 @@ func (u *UpdateFromGateway) apply(c *Current) error {
 
 	// update devices and their features
 	for _, du := range u.data.Gateway.Devices {
-		if err := du.apply(c, u.data.Gateway.ExternalID); err != nil {
-			return err
-		}
+		du.apply(c, u.data.Gateway.ExternalID)
 	}
 
 	return nil
@@ -100,9 +98,7 @@ func (gu *gatewayUpdateFromGateway) apply(c *Current) error {
 	// get a copy of the gateway
 	g, ok := c.Gateways[gid]
 	if !ok {
-		// this should never happen becaue we validated!
-		// but we could still handle it better than this.
-		return fmt.Errorf("gateway not found during update (this shouldn't happen!)")
+		return fmt.Errorf("gateway not found during update (this shouldn't happen becaue we validated!)")
 	}
 
 	// update fields on our gateway
@@ -122,9 +118,7 @@ func (gu *gatewayUpdateFromGateway) apply(c *Current) error {
 
 	// update the gateway's features
 	for _, fu := range gu.Features {
-		if err := fu.apply(c, gid.ExternalGatewayID, ""); err != nil {
-			return err
-		}
+		fu.apply(c, gid.ExternalGatewayID, "")
 	}
 
 	return nil
@@ -154,7 +148,7 @@ func (du *deviceUpdateFromGateway) validate(c *Current, externalGatewayID string
 	return nil
 }
 
-func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) error {
+func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) {
 	did := DeviceID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  du.ExternalID,
@@ -183,12 +177,8 @@ func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) e
 
 	// update the device's features
 	for _, fu := range du.Features {
-		if err := fu.apply(c, did.ExternalGatewayID, did.ExternalDeviceID); err != nil {
-			return err
-		}
+		fu.apply(c, did.ExternalGatewayID, did.ExternalDeviceID)
 	}
-
-	return nil
 }
 
 type featureUpdateFromGateway struct {
@@ -199,7 +189,7 @@ type featureUpdateFromGateway struct {
 }
 
 func (fu *featureUpdateFromGateway) validate(c *Current) error {
-	// valdidate IDReferredToByGateway must be non-empty
+	// valdidate ExternalID must be non-empty
 	if fu.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on feature")
 	}
@@ -207,7 +197,7 @@ func (fu *featureUpdateFromGateway) validate(c *Current) error {
 	return nil
 }
 
-func (fu *featureUpdateFromGateway) apply(c *Current, externalGatewayID string, externalDeviceID string) error {
+func (fu *featureUpdateFromGateway) apply(c *Current, externalGatewayID string, externalDeviceID string) {
 	fid := FeatureID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  externalDeviceID,
@@ -225,6 +215,4 @@ func (fu *featureUpdateFromGateway) apply(c *Current, externalGatewayID string, 
 
 	// replace feature on state with updated copy
 	c.Features[fid] = f
-
-	return nil
 }
