@@ -10,7 +10,7 @@ type UpdateFromGateway struct {
 	validated bool
 	auth      GatewayAuth
 	data      struct {
-		Gateway gatewayUpdateFromGateway
+		Gateway *gatewayUpdateFromGateway
 	}
 }
 
@@ -77,8 +77,8 @@ type gatewayUpdateFromGateway struct {
 	Model        *string
 	SerialNumber *string
 	Active       *bool
-	Devices      []deviceUpdateFromGateway
-	Features     []featureUpdateFromGateway
+	Devices      []*deviceUpdateFromGateway
+	Features     []*featureUpdateFromGateway
 }
 
 func (gu *gatewayUpdateFromGateway) validate(c *Current) error {
@@ -109,7 +109,7 @@ func (gu *gatewayUpdateFromGateway) apply(c *Current) error {
 		ExternalGatewayID: gu.ExternalID,
 	}
 
-	// get a copy of the gateway
+	// validate that gateway already exists
 	g, ok := c.Gateways[gid]
 	if !ok {
 		return fmt.Errorf("gateway not found during update (this shouldn't happen becaue we validated!)")
@@ -130,9 +130,6 @@ func (gu *gatewayUpdateFromGateway) apply(c *Current) error {
 		g.Active = *gu.Active
 	}
 
-	// replace gateway on state with updated copy
-	c.Gateways[gid] = g
-
 	// update the gateway's features
 	for _, fu := range gu.Features {
 		fu.apply(c, gid.ExternalGatewayID, "")
@@ -147,7 +144,7 @@ type deviceUpdateFromGateway struct {
 	Model        *string
 	SerialNumber *string
 	Active       *bool
-	Features     []featureUpdateFromGateway
+	Features     []*featureUpdateFromGateway
 }
 
 func (du *deviceUpdateFromGateway) validate(c *Current, externalGatewayID string) error {
@@ -179,10 +176,11 @@ func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) {
 		ExternalDeviceID:  du.ExternalID,
 	}
 
-	// get a copy of the device if we already have it (or create a new one)
+	// get a refernce to the device if we already have it, or create a new one
 	d, ok := c.Devices[did]
 	if !ok {
-		d = Device{}
+		c.Devices[did] = new(Device)
+		c.Devices[did].ID = did
 	}
 
 	// update fields on our copy
@@ -199,9 +197,6 @@ func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) {
 	if du.Active != nil {
 		d.Active = *du.Active
 	}
-
-	// replace device on state with updated copy
-	c.Devices[did] = d
 
 	// update the device's features
 	for _, fu := range du.Features {
@@ -240,10 +235,11 @@ func (fu *featureUpdateFromGateway) apply(c *Current, externalGatewayID string, 
 		ExternalFeatureID: fu.ExternalID,
 	}
 
-	// get a copy of the feature if we already have it (or create a new one)
+	// get a refernce to the device if we already have it, or create a new one
 	f, ok := c.Features[fid]
 	if !ok {
-		f = Feature{}
+		c.Features[fid] = new(Feature)
+		c.Features[fid].ID = fid
 	}
 
 	// update fields on our copy
@@ -253,7 +249,4 @@ func (fu *featureUpdateFromGateway) apply(c *Current, externalGatewayID string, 
 
 	// update fields on our copy
 	f.ID = fid
-
-	// replace feature on state with updated copy
-	c.Features[fid] = f
 }

@@ -14,8 +14,8 @@ type State struct {
 
 // Auths ...
 type Auths struct {
-	Gateways    map[GatewayID]GatewayAuth
-	GatewayOTPs map[GatewayID]GatewayOTP
+	Gateways    map[GatewayID]*GatewayAuth
+	GatewayOTPs map[GatewayID]*GatewayOTP
 	// Users map[UserID]User
 }
 
@@ -36,9 +36,9 @@ type GatewayOTP struct {
 
 // Current ...
 type Current struct {
-	Gateways map[GatewayID]Gateway
-	Devices  map[DeviceID]Device
-	Features map[FeatureID]Feature
+	Gateways map[GatewayID]*Gateway
+	Devices  map[DeviceID]*Device
+	Features map[FeatureID]*Feature
 }
 
 // Gateway ...
