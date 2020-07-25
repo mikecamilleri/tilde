@@ -72,7 +72,19 @@ func (f FeatureID) String() string {
 	return f.ExternalGatewayID + "-" + f.ExternalDeviceID + "-" + f.ExternalFeatureID
 }
 
-func (s *State) validateStateUpdateFromGateway(u *UpdateFromGateway) error {
+// ApplyUpdateFromGateway ...
+func (s *State) ApplyUpdateFromGateway(u UpdateFromGateway) error {
+	// TODO: lock?
+	if err := s.validateUpdateFromGateway(&u); err != nil {
+		return err
+	}
+	if err := s.applyValidatedUpdateFromGateway(&u); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *State) validateUpdateFromGateway(u *UpdateFromGateway) error {
 	// TODO: break this up like updating
 
 	// TODO: validate auth and that gateway is only updating itself (and inherently
@@ -116,19 +128,19 @@ func (s *State) validateFeatureUpdateFromGateway(fu *FeatureUpdateFromGateway) e
 	return nil
 }
 
-func (s *State) updateWithStateUpdateFromGateway(u *UpdateFromGateway) error {
+func (s *State) applyValidatedUpdateFromGateway(u *UpdateFromGateway) error {
 	// update gateway and its features
-	s.updateWithGatewayUpdateFromGateway(&u.Gateway)
+	s.applyValidatedGatewayUpdateFromGateway(&u.Gateway)
 
 	// update devices and their features
 	for _, du := range u.Gateway.Devices {
-		s.updateWithDeviceUpdateFromGateway(u.Gateway.ExternalID, &du)
+		s.applyValidatedDeviceUpdateFromGateway(u.Gateway.ExternalID, &du)
 	}
 
 	return nil
 }
 
-func (s *State) updateWithGatewayUpdateFromGateway(gu *GatewayUpdateFromGateway) {
+func (s *State) applyValidatedGatewayUpdateFromGateway(gu *GatewayUpdateFromGateway) {
 	gid := GatewayID{
 		ExternalGatewayID: gu.ExternalID,
 	}
@@ -158,11 +170,11 @@ func (s *State) updateWithGatewayUpdateFromGateway(gu *GatewayUpdateFromGateway)
 
 	// update the gateway's features
 	for _, fu := range gu.Features {
-		s.updateWithFeatureUpdateFromGateway(gid.ExternalGatewayID, "", &fu)
+		s.applyValidatedFeatureUpdateFromGateway(gid.ExternalGatewayID, "", &fu)
 	}
 }
 
-func (s *State) updateWithDeviceUpdateFromGateway(externalGatewayID string, du *DeviceUpdateFromGateway) {
+func (s *State) applyValidatedDeviceUpdateFromGateway(externalGatewayID string, du *DeviceUpdateFromGateway) {
 	did := DeviceID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  du.ExternalID,
@@ -191,11 +203,11 @@ func (s *State) updateWithDeviceUpdateFromGateway(externalGatewayID string, du *
 
 	// update the device's features
 	for _, fu := range du.Features {
-		s.updateWithFeatureUpdateFromGateway(did.ExternalGatewayID, did.ExternalDeviceID, &fu)
+		s.applyValidatedFeatureUpdateFromGateway(did.ExternalGatewayID, did.ExternalDeviceID, &fu)
 	}
 }
 
-func (s *State) updateWithFeatureUpdateFromGateway(externalGatewayID string, externalDeviceID string, fu *FeatureUpdateFromGateway) {
+func (s *State) applyValidatedFeatureUpdateFromGateway(externalGatewayID string, externalDeviceID string, fu *FeatureUpdateFromGateway) {
 	fid := FeatureID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  externalDeviceID,
