@@ -72,7 +72,7 @@ func (u *UpdateFromGateway) apply(c *Current) error {
 }
 
 type gatewayUpdateFromGateway struct {
-	ExternalID   string
+	ExternalID   string `json:"id"`
 	Manufacturer *string
 	Model        *string
 	SerialNumber *string
@@ -131,7 +131,7 @@ func (gu *gatewayUpdateFromGateway) apply(c *Current) error {
 }
 
 type deviceUpdateFromGateway struct {
-	ExternalID   string
+	ExternalID   string `json:"id"`
 	Manufacturer *string
 	Model        *string
 	SerialNumber *string
@@ -188,7 +188,7 @@ func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) {
 }
 
 type featureUpdateFromGateway struct {
-	ExternalID string
+	ExternalID string `json:"id"`
 	// Standard    *string
 	// user settable?
 	// ...
