@@ -4,7 +4,8 @@ import "encoding/json"
 
 // UpdateFromGateway ...
 type UpdateFromGateway struct {
-	Gateway GatewayUpdateFromGateway
+	validated bool
+	Gateway   GatewayUpdateFromGateway
 }
 
 // GatewayUpdateFromGateway ...

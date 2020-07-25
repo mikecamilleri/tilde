@@ -117,6 +117,9 @@ func (s *State) validateUpdateFromGateway(u *UpdateFromGateway) error {
 		}
 	}
 
+	// mark as validated
+	u.validated = true
+
 	return nil
 }
 
@@ -129,6 +132,10 @@ func (s *State) validateFeatureUpdateFromGateway(fu *FeatureUpdateFromGateway) e
 }
 
 func (s *State) applyValidatedUpdateFromGateway(u *UpdateFromGateway) error {
+	if !u.validated {
+		return fmt.Errorf("update not validated before applying")
+	}
+
 	// update gateway and its features
 	s.applyValidatedGatewayUpdateFromGateway(&u.Gateway)
 
