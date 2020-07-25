@@ -5,9 +5,11 @@ import "sync"
 // State ...
 type State struct {
 	sync.RWMutex
-	Gateways map[GatewayID]Gateway
-	Devices  map[DeviceID]Device
-	Features map[FeatureID]Feature
+	current struct {
+		Gateways map[GatewayID]Gateway
+		Devices  map[DeviceID]Device
+		Features map[FeatureID]Feature
+	}
 }
 
 // Gateway ...
