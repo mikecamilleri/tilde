@@ -8,14 +8,16 @@ import (
 // UpdateFromGateway ...
 type UpdateFromGateway struct {
 	validated bool
-	Gateway   gatewayUpdateFromGateway
+	data      struct {
+		Gateway gatewayUpdateFromGateway
+	}
 }
 
-// NewUpdateFromGateway unmarshals the JSON update from the gateway into a
-// StateUpdateFromGateway struct. Extra fields are ignored.
+// NewUpdateFromGateway unmarshals the JSON update from the gateway into an
+// UpdateFromGateway struct. Extra fields are ignored.
 func NewUpdateFromGateway(updateJSONBytes []byte) (UpdateFromGateway, error) {
 	u := UpdateFromGateway{}
-	if err := json.Unmarshal(updateJSONBytes, &u); err != nil {
+	if err := json.Unmarshal(updateJSONBytes, &u.data); err != nil {
 		return u, err
 	}
 	return u, nil
@@ -26,14 +28,14 @@ func (u *UpdateFromGateway) validate(s *State) error {
 	// its own devices due to id constrcution) here or in API
 
 	// validate gateway and its features
-	if err := u.Gateway.validate(s); err != nil {
+	if err := u.data.Gateway.validate(s); err != nil {
 		return err
 	}
 
 	// validate devices and their features
-	for _, du := range u.Gateway.Devices {
+	for _, du := range u.data.Gateway.Devices {
 		// validate ExternalID must be non-empty
-		if err := du.validate(s, u.Gateway.ExternalID); err != nil {
+		if err := du.validate(s, u.data.Gateway.ExternalID); err != nil {
 			return err
 		}
 	}
@@ -45,18 +47,19 @@ func (u *UpdateFromGateway) validate(s *State) error {
 }
 
 func (u *UpdateFromGateway) apply(s *State) error {
+	// is this validated?
 	if !u.validated {
 		return fmt.Errorf("update not validated before applying")
 	}
 
 	// update gateway and its features
-	if err := u.Gateway.apply(s); err != nil {
+	if err := u.data.Gateway.apply(s); err != nil {
 		return err
 	}
 
 	// update devices and their features
-	for _, du := range u.Gateway.Devices {
-		if err := du.apply(s, u.Gateway.ExternalID); err != nil {
+	for _, du := range u.data.Gateway.Devices {
+		if err := du.apply(s, u.data.Gateway.ExternalID); err != nil {
 			return err
 		}
 	}
