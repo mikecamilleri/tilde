@@ -74,7 +74,7 @@ func (f FeatureID) String() string {
 
 // ApplyUpdateFromGateway ...
 func (s *State) ApplyUpdateFromGateway(u UpdateFromGateway) error {
-	// TODO: lock?
+	// TODO: use sync.RWMutex (also on all exported methods)
 	if err := s.validateUpdateFromGateway(&u); err != nil {
 		return err
 	}
@@ -85,35 +85,19 @@ func (s *State) ApplyUpdateFromGateway(u UpdateFromGateway) error {
 }
 
 func (s *State) validateUpdateFromGateway(u *UpdateFromGateway) error {
-	// TODO: break this up like updating
-
 	// TODO: validate auth and that gateway is only updating itself (and inherently
-	// its own devices) here or in API
+	// its own devices due to id constrcution) here or in API
 
-	// validate gateway must already exist
-	if _, ok := s.Gateways[GatewayID{ExternalGatewayID: u.Gateway.ExternalID}]; !ok {
-		return fmt.Errorf("gateway does not exist: %s", u.Gateway.ExternalID)
+	// validate gateway and its features
+	if err := s.validateGatewayUpdateFromGateway(&u.Gateway); err != nil {
+		return err
 	}
 
-	// validate gateway features
-	for _, fu := range u.Gateway.Features {
-		if err := s.validateFeatureUpdateFromGateway(&fu); err != nil {
-			return err
-		}
-	}
-
-	// validate devices
+	// validate devices and their features
 	for _, du := range u.Gateway.Devices {
 		// validate ExternalID must be non-empty
-		if du.ExternalID == "" {
-			return fmt.Errorf("ExternalID must not be empty on device")
-		}
-
-		// validate device features
-		for _, fu := range du.Features {
-			if err := s.validateFeatureUpdateFromGateway(&fu); err != nil {
-				return err
-			}
+		if err := s.validateDeviceUpdateFromGateway(u.Gateway.ExternalID, &du); err != nil {
+			return err
 		}
 	}
 
@@ -123,11 +107,44 @@ func (s *State) validateUpdateFromGateway(u *UpdateFromGateway) error {
 	return nil
 }
 
+func (s *State) validateGatewayUpdateFromGateway(gu *GatewayUpdateFromGateway) error {
+	// validate gateway must already exist
+	if _, ok := s.Gateways[GatewayID{ExternalGatewayID: gu.ExternalID}]; !ok {
+		return fmt.Errorf("gateway does not exist: %s", gu.ExternalID)
+	}
+
+	// validate gateway features
+	for _, fu := range gu.Features {
+		if err := s.validateFeatureUpdateFromGateway(&fu); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *State) validateDeviceUpdateFromGateway(externalGatewayID string, du *DeviceUpdateFromGateway) error {
+	// validate ExternalID must be non-empty
+	if du.ExternalID == "" {
+		return fmt.Errorf("ExternalID must not be empty on device")
+	}
+
+	// validate device features
+	for _, fu := range du.Features {
+		if err := s.validateFeatureUpdateFromGateway(&fu); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (s *State) validateFeatureUpdateFromGateway(fu *FeatureUpdateFromGateway) error {
 	// valdidate IDReferredToByGateway must be non-empty
 	if fu.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on feature")
 	}
+
 	return nil
 }
 
@@ -137,17 +154,21 @@ func (s *State) applyValidatedUpdateFromGateway(u *UpdateFromGateway) error {
 	}
 
 	// update gateway and its features
-	s.applyValidatedGatewayUpdateFromGateway(&u.Gateway)
+	if err := s.applyValidatedGatewayUpdateFromGateway(&u.Gateway); err != nil {
+		return err
+	}
 
 	// update devices and their features
 	for _, du := range u.Gateway.Devices {
-		s.applyValidatedDeviceUpdateFromGateway(u.Gateway.ExternalID, &du)
+		if err := s.applyValidatedDeviceUpdateFromGateway(u.Gateway.ExternalID, &du); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (s *State) applyValidatedGatewayUpdateFromGateway(gu *GatewayUpdateFromGateway) {
+func (s *State) applyValidatedGatewayUpdateFromGateway(gu *GatewayUpdateFromGateway) error {
 	gid := GatewayID{
 		ExternalGatewayID: gu.ExternalID,
 	}
@@ -157,7 +178,7 @@ func (s *State) applyValidatedGatewayUpdateFromGateway(gu *GatewayUpdateFromGate
 	if !ok {
 		// this should never happen becaue we validated!
 		// but we could still handle it better than this.
-		panic("gateway not found during update")
+		return fmt.Errorf("gateway not found during update (this shouldn't happen!)")
 	}
 
 	// update fields on our gateway
@@ -177,11 +198,15 @@ func (s *State) applyValidatedGatewayUpdateFromGateway(gu *GatewayUpdateFromGate
 
 	// update the gateway's features
 	for _, fu := range gu.Features {
-		s.applyValidatedFeatureUpdateFromGateway(gid.ExternalGatewayID, "", &fu)
+		if err := s.applyValidatedFeatureUpdateFromGateway(gid.ExternalGatewayID, "", &fu); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
-func (s *State) applyValidatedDeviceUpdateFromGateway(externalGatewayID string, du *DeviceUpdateFromGateway) {
+func (s *State) applyValidatedDeviceUpdateFromGateway(externalGatewayID string, du *DeviceUpdateFromGateway) error {
 	did := DeviceID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  du.ExternalID,
@@ -210,11 +235,15 @@ func (s *State) applyValidatedDeviceUpdateFromGateway(externalGatewayID string, 
 
 	// update the device's features
 	for _, fu := range du.Features {
-		s.applyValidatedFeatureUpdateFromGateway(did.ExternalGatewayID, did.ExternalDeviceID, &fu)
+		if err := s.applyValidatedFeatureUpdateFromGateway(did.ExternalGatewayID, did.ExternalDeviceID, &fu); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
-func (s *State) applyValidatedFeatureUpdateFromGateway(externalGatewayID string, externalDeviceID string, fu *FeatureUpdateFromGateway) {
+func (s *State) applyValidatedFeatureUpdateFromGateway(externalGatewayID string, externalDeviceID string, fu *FeatureUpdateFromGateway) error {
 	fid := FeatureID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  externalDeviceID,
@@ -232,4 +261,6 @@ func (s *State) applyValidatedFeatureUpdateFromGateway(externalGatewayID string,
 
 	// replace feature on state with updated copy
 	s.Features[fid] = f
+
+	return nil
 }
