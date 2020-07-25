@@ -76,6 +76,7 @@ type gatewayUpdateFromGateway struct {
 	Manufacturer *string
 	Model        *string
 	SerialNumber *string
+	Active       *bool
 	Devices      []deviceUpdateFromGateway
 	Features     []featureUpdateFromGateway
 }
@@ -84,6 +85,13 @@ func (gu *gatewayUpdateFromGateway) validate(c *Current) error {
 	// validate gateway must already exist
 	if _, ok := c.Gateways[GatewayID{ExternalGatewayID: gu.ExternalID}]; !ok {
 		return fmt.Errorf("gateway does not exist: %s", gu.ExternalID)
+	}
+
+	// we are receiving an update, so mark as active unless spcified otherwise
+	// in update
+	if gu.Active == nil {
+		gu.Active = new(bool)
+		*gu.Active = true
 	}
 
 	// validate gateway features
@@ -118,6 +126,9 @@ func (gu *gatewayUpdateFromGateway) apply(c *Current) error {
 	if gu.SerialNumber != nil {
 		g.SerialNumber = *gu.SerialNumber
 	}
+	if gu.Active != nil {
+		g.Active = *gu.Active
+	}
 
 	// replace gateway on state with updated copy
 	c.Gateways[gid] = g
@@ -135,6 +146,7 @@ type deviceUpdateFromGateway struct {
 	Manufacturer *string
 	Model        *string
 	SerialNumber *string
+	Active       *bool
 	Features     []featureUpdateFromGateway
 }
 
@@ -142,6 +154,13 @@ func (du *deviceUpdateFromGateway) validate(c *Current, externalGatewayID string
 	// validate ExternalID must be non-empty
 	if du.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on device")
+	}
+
+	// we are receiving an update, so mark as active unless spcified otherwise
+	// in update
+	if du.Active == nil {
+		du.Active = new(bool)
+		*du.Active = true
 	}
 
 	// validate device features
@@ -177,6 +196,9 @@ func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) {
 	if du.SerialNumber != nil {
 		d.SerialNumber = *du.SerialNumber
 	}
+	if du.Active != nil {
+		d.Active = *du.Active
+	}
 
 	// replace device on state with updated copy
 	c.Devices[did] = d
@@ -189,6 +211,7 @@ func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) {
 
 type featureUpdateFromGateway struct {
 	ExternalID string `json:"id"`
+	Active     *bool
 	// Standard    *string
 	// user settable?
 	// ...
@@ -198,6 +221,13 @@ func (fu *featureUpdateFromGateway) validate(c *Current) error {
 	// valdidate ExternalID must be non-empty
 	if fu.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on feature")
+	}
+
+	// we are receiving an update, so mark as active unless spcified otherwise
+	// in update
+	if fu.Active == nil {
+		fu.Active = new(bool)
+		*fu.Active = true
 	}
 
 	return nil
@@ -214,6 +244,11 @@ func (fu *featureUpdateFromGateway) apply(c *Current, externalGatewayID string, 
 	f, ok := c.Features[fid]
 	if !ok {
 		f = Feature{}
+	}
+
+	// update fields on our copy
+	if fu.Active != nil {
+		f.Active = *fu.Active
 	}
 
 	// update fields on our copy

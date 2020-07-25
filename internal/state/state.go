@@ -49,6 +49,8 @@ type Gateway struct {
 	Manufacturer string
 	Model        string
 	SerialNumber string
+	Active       bool
+	Ignore       bool
 	// Features     []FeatureID
 	// Devices      []DeviceID
 }
@@ -61,6 +63,8 @@ type Device struct {
 	Manufacturer string
 	Model        string
 	SerialNumber string
+	Active       bool
+	Ignore       bool
 	// Features              []FeatureID
 }
 
@@ -69,6 +73,8 @@ type Feature struct {
 	ID          FeatureID
 	Name        string
 	Description string
+	Active      bool
+	Ignore      bool
 	// Standard    string
 	// user settable?
 	// ...
