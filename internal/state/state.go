@@ -75,14 +75,16 @@ func (f FeatureID) String() string {
 
 // ApplyUpdateFromGateway ...
 func (s *State) ApplyUpdateFromGateway(u UpdateFromGateway) error {
-	// TODO: use sync.RWMutex (also on all exported methods)
+	s.Lock()
+	defer s.Unlock()
+
 	if err := u.validate(s); err != nil {
 		return err
 	}
 
-	// no erros because of potentialinconsistant state
 	if err := u.apply(s); err != nil {
 		return err
 	}
+
 	return nil
 }
