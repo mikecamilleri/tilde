@@ -23,19 +23,19 @@ func NewUpdateFromGateway(updateJSONBytes []byte) (UpdateFromGateway, error) {
 	return u, nil
 }
 
-func (u *UpdateFromGateway) validate(s *State) error {
+func (u *UpdateFromGateway) validate(c *Current) error {
 	// TODO: validate auth and that gateway is only updating itself (and inherently
 	// its own devices due to id constrcution) here or in API
 
 	// validate gateway and its features
-	if err := u.data.Gateway.validate(s); err != nil {
+	if err := u.data.Gateway.validate(c); err != nil {
 		return err
 	}
 
 	// validate devices and their features
 	for _, du := range u.data.Gateway.Devices {
 		// validate ExternalID must be non-empty
-		if err := du.validate(s, u.data.Gateway.ExternalID); err != nil {
+		if err := du.validate(c, u.data.Gateway.ExternalID); err != nil {
 			return err
 		}
 	}
@@ -46,20 +46,20 @@ func (u *UpdateFromGateway) validate(s *State) error {
 	return nil
 }
 
-func (u *UpdateFromGateway) apply(s *State) error {
+func (u *UpdateFromGateway) apply(c *Current) error {
 	// is this validated?
 	if !u.validated {
 		return fmt.Errorf("update not validated before applying")
 	}
 
 	// update gateway and its features
-	if err := u.data.Gateway.apply(s); err != nil {
+	if err := u.data.Gateway.apply(c); err != nil {
 		return err
 	}
 
 	// update devices and their features
 	for _, du := range u.data.Gateway.Devices {
-		if err := du.apply(s, u.data.Gateway.ExternalID); err != nil {
+		if err := du.apply(c, u.data.Gateway.ExternalID); err != nil {
 			return err
 		}
 	}
@@ -76,15 +76,15 @@ type gatewayUpdateFromGateway struct {
 	Features     []featureUpdateFromGateway
 }
 
-func (gu *gatewayUpdateFromGateway) validate(s *State) error {
+func (gu *gatewayUpdateFromGateway) validate(c *Current) error {
 	// validate gateway must already exist
-	if _, ok := s.current.Gateways[GatewayID{ExternalGatewayID: gu.ExternalID}]; !ok {
+	if _, ok := c.Gateways[GatewayID{ExternalGatewayID: gu.ExternalID}]; !ok {
 		return fmt.Errorf("gateway does not exist: %s", gu.ExternalID)
 	}
 
 	// validate gateway features
 	for _, fu := range gu.Features {
-		if err := fu.validate(s); err != nil {
+		if err := fu.validate(c); err != nil {
 			return err
 		}
 	}
@@ -92,13 +92,13 @@ func (gu *gatewayUpdateFromGateway) validate(s *State) error {
 	return nil
 }
 
-func (gu *gatewayUpdateFromGateway) apply(s *State) error {
+func (gu *gatewayUpdateFromGateway) apply(c *Current) error {
 	gid := GatewayID{
 		ExternalGatewayID: gu.ExternalID,
 	}
 
 	// get a copy of the gateway
-	g, ok := s.current.Gateways[gid]
+	g, ok := c.Gateways[gid]
 	if !ok {
 		// this should never happen becaue we validated!
 		// but we could still handle it better than this.
@@ -118,11 +118,11 @@ func (gu *gatewayUpdateFromGateway) apply(s *State) error {
 	}
 
 	// replace gateway on state with updated copy
-	s.current.Gateways[gid] = g
+	c.Gateways[gid] = g
 
 	// update the gateway's features
 	for _, fu := range gu.Features {
-		if err := fu.apply(s, gid.ExternalGatewayID, ""); err != nil {
+		if err := fu.apply(c, gid.ExternalGatewayID, ""); err != nil {
 			return err
 		}
 	}
@@ -138,7 +138,7 @@ type deviceUpdateFromGateway struct {
 	Features     []featureUpdateFromGateway
 }
 
-func (du *deviceUpdateFromGateway) validate(s *State, externalGatewayID string) error {
+func (du *deviceUpdateFromGateway) validate(c *Current, externalGatewayID string) error {
 	// validate ExternalID must be non-empty
 	if du.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on device")
@@ -146,7 +146,7 @@ func (du *deviceUpdateFromGateway) validate(s *State, externalGatewayID string) 
 
 	// validate device features
 	for _, fu := range du.Features {
-		if err := fu.validate(s); err != nil {
+		if err := fu.validate(c); err != nil {
 			return err
 		}
 	}
@@ -154,14 +154,14 @@ func (du *deviceUpdateFromGateway) validate(s *State, externalGatewayID string) 
 	return nil
 }
 
-func (du *deviceUpdateFromGateway) apply(s *State, externalGatewayID string) error {
+func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) error {
 	did := DeviceID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  du.ExternalID,
 	}
 
 	// get a copy of the device if we already have it (or create a new one)
-	d, ok := s.current.Devices[did]
+	d, ok := c.Devices[did]
 	if !ok {
 		d = Device{}
 	}
@@ -179,11 +179,11 @@ func (du *deviceUpdateFromGateway) apply(s *State, externalGatewayID string) err
 	}
 
 	// replace device on state with updated copy
-	s.current.Devices[did] = d
+	c.Devices[did] = d
 
 	// update the device's features
 	for _, fu := range du.Features {
-		if err := fu.apply(s, did.ExternalGatewayID, did.ExternalDeviceID); err != nil {
+		if err := fu.apply(c, did.ExternalGatewayID, did.ExternalDeviceID); err != nil {
 			return err
 		}
 	}
@@ -198,7 +198,7 @@ type featureUpdateFromGateway struct {
 	// ...
 }
 
-func (fu *featureUpdateFromGateway) validate(s *State) error {
+func (fu *featureUpdateFromGateway) validate(c *Current) error {
 	// valdidate IDReferredToByGateway must be non-empty
 	if fu.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on feature")
@@ -207,7 +207,7 @@ func (fu *featureUpdateFromGateway) validate(s *State) error {
 	return nil
 }
 
-func (fu *featureUpdateFromGateway) apply(s *State, externalGatewayID string, externalDeviceID string) error {
+func (fu *featureUpdateFromGateway) apply(c *Current, externalGatewayID string, externalDeviceID string) error {
 	fid := FeatureID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  externalDeviceID,
@@ -215,7 +215,7 @@ func (fu *featureUpdateFromGateway) apply(s *State, externalGatewayID string, ex
 	}
 
 	// get a copy of the feature if we already have it (or create a new one)
-	f, ok := s.current.Features[fid]
+	f, ok := c.Features[fid]
 	if !ok {
 		f = Feature{}
 	}
@@ -224,7 +224,7 @@ func (fu *featureUpdateFromGateway) apply(s *State, externalGatewayID string, ex
 	f.ID = fid
 
 	// replace feature on state with updated copy
-	s.current.Features[fid] = f
+	c.Features[fid] = f
 
 	return nil
 }

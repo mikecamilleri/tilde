@@ -5,11 +5,14 @@ import "sync"
 // State ...
 type State struct {
 	sync.RWMutex
-	current struct {
-		Gateways map[GatewayID]Gateway
-		Devices  map[DeviceID]Device
-		Features map[FeatureID]Feature
-	}
+	current Current
+}
+
+// Current ...
+type Current struct {
+	Gateways map[GatewayID]Gateway
+	Devices  map[DeviceID]Device
+	Features map[FeatureID]Feature
 }
 
 // Gateway ...
@@ -80,11 +83,11 @@ func (s *State) ApplyUpdateFromGateway(u UpdateFromGateway) error {
 	s.Lock()
 	defer s.Unlock()
 
-	if err := u.validate(s); err != nil {
+	if err := u.validate(&s.current); err != nil {
 		return err
 	}
 
-	if err := u.apply(s); err != nil {
+	if err := u.apply(&s.current); err != nil {
 		return err
 	}
 
