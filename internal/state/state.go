@@ -1,11 +1,37 @@
 package state
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 // State ...
 type State struct {
 	sync.RWMutex
+	auths   Auths
 	current Current
+}
+
+// Auths ...
+type Auths struct {
+	Gateways    map[GatewayID]GatewayAuth
+	GatewayOTPs map[GatewayID]GatewayOTP
+	// Users map[UserID]User
+}
+
+// GatewayAuth ...
+type GatewayAuth struct {
+	ID           GatewayID
+	Username     string
+	passwordHash string
+}
+
+// GatewayOTP ...
+type GatewayOTP struct {
+	ID       GatewayID
+	Username string
+	Expires  time.Time
+	otpHash  string
 }
 
 // Current ...

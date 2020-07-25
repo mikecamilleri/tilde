@@ -8,6 +8,7 @@ import (
 // UpdateFromGateway ...
 type UpdateFromGateway struct {
 	validated bool
+	auth      GatewayAuth
 	data      struct {
 		Gateway gatewayUpdateFromGateway
 	}
@@ -15,8 +16,10 @@ type UpdateFromGateway struct {
 
 // NewUpdateFromGateway unmarshals the JSON update from the gateway into an
 // UpdateFromGateway struct. Extra fields are ignored.
-func NewUpdateFromGateway(updateJSONBytes []byte) (UpdateFromGateway, error) {
-	u := UpdateFromGateway{}
+func NewUpdateFromGateway(auth GatewayAuth, updateJSONBytes []byte) (UpdateFromGateway, error) {
+	u := UpdateFromGateway{
+		auth: auth,
+	}
 	if err := json.Unmarshal(updateJSONBytes, &u.data); err != nil {
 		return u, err
 	}
@@ -24,8 +27,11 @@ func NewUpdateFromGateway(updateJSONBytes []byte) (UpdateFromGateway, error) {
 }
 
 func (u *UpdateFromGateway) validate(c *Current) error {
-	// TODO: validate auth and that gateway is only updating itself (and inherently
-	// its own devices due to id constrcution) here or in API
+	// validate authorization (not authentication!) and that gateway is only
+	// updating itself (and inherently its own devices due to id construction)
+	if u.auth.ID.ExternalGatewayID != u.data.Gateway.ExternalID {
+		return fmt.Errorf("gateway attempting to update other than iteself")
+	}
 
 	// validate gateway and its features
 	if err := u.data.Gateway.validate(c); err != nil {
