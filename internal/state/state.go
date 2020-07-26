@@ -6,10 +6,19 @@ import (
 )
 
 // State ...
+// TODO: rename? CoreState? SystemState?
 type State struct {
 	sync.RWMutex
 	auths   Auths
-	current Current
+	current CurrentState // TODO: rename?
+}
+
+// NewState ...
+func NewState() State {
+	return State{
+		auths:   newAuths(),
+		current: newCurrentState(),
+	}
 }
 
 // Auths ...
@@ -18,6 +27,20 @@ type Auths struct {
 	GatewayOTPs map[GatewayID]*GatewayOTP
 	// Users map[UserID]User
 }
+
+// newAuths ...
+func newAuths() Auths {
+	return Auths{
+		Gateways:    make(map[GatewayID]*GatewayAuth),
+		GatewayOTPs: make(map[GatewayID]*GatewayOTP),
+	}
+}
+
+// TODO:
+// - add non-exported functions to create new GatewayAuth/GatewayOTP
+// - add exported methods to State that allow for addition of new
+//   GatewayAuth/GatewayOTP with validation of relationships. Don't forget
+//   locks!
 
 // GatewayAuth ...
 type GatewayAuth struct {
@@ -28,18 +51,33 @@ type GatewayAuth struct {
 
 // GatewayOTP ...
 type GatewayOTP struct {
-	ID       GatewayID
+	ID       GatewayID // future gateway id? string instead?
 	Username string
 	Expires  time.Time
 	otpHash  string
 }
 
-// Current ...
-type Current struct {
+// CurrentState ...
+type CurrentState struct {
 	Gateways map[GatewayID]*Gateway
 	Devices  map[DeviceID]*Device
 	Features map[FeatureID]*Feature
 }
+
+// NewCurrentState ...
+func newCurrentState() CurrentState {
+	return CurrentState{
+		Devices:  make(map[DeviceID]*Device),
+		Gateways: make(map[GatewayID]*Gateway),
+		Features: make(map[FeatureID]*Feature),
+	}
+}
+
+// TODO:
+// - add non-exported functions to create new Gateway/Device/Feature
+// - add exported methods to State that allow for addiotn of new
+//   Gateway/Device/Feature with validation of relationships. Don't forget
+//   locks!
 
 // Gateway ...
 type Gateway struct {

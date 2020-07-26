@@ -8,6 +8,6 @@ import (
 
 func main() {
 	fmt.Println("Hello World!")
-	s := state.State{}
-	_ = s
+	s := state.NewState()
+	_ = &s
 }

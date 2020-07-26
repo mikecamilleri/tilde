@@ -26,7 +26,7 @@ func NewUpdateFromGateway(auth GatewayAuth, updateJSONBytes []byte) (UpdateFromG
 	return u, nil
 }
 
-func (u *UpdateFromGateway) validate(c *Current) error {
+func (u *UpdateFromGateway) validate(c *CurrentState) error {
 	// validate authorization (not authentication!) and that gateway is only
 	// updating itself (and inherently its own devices due to id construction)
 	if u.auth.ID.ExternalGatewayID != u.data.Gateway.ExternalID {
@@ -52,7 +52,7 @@ func (u *UpdateFromGateway) validate(c *Current) error {
 	return nil
 }
 
-func (u *UpdateFromGateway) apply(c *Current) error {
+func (u *UpdateFromGateway) apply(c *CurrentState) error {
 	// is this validated?
 	if !u.validated {
 		return fmt.Errorf("update not validated before applying")
@@ -81,7 +81,7 @@ type gatewayUpdateFromGateway struct {
 	Features     []*featureUpdateFromGateway
 }
 
-func (gu *gatewayUpdateFromGateway) validate(c *Current) error {
+func (gu *gatewayUpdateFromGateway) validate(c *CurrentState) error {
 	// validate gateway must already exist
 	if _, ok := c.Gateways[GatewayID{ExternalGatewayID: gu.ExternalID}]; !ok {
 		return fmt.Errorf("gateway does not exist: %s", gu.ExternalID)
@@ -104,7 +104,7 @@ func (gu *gatewayUpdateFromGateway) validate(c *Current) error {
 	return nil
 }
 
-func (gu *gatewayUpdateFromGateway) apply(c *Current) error {
+func (gu *gatewayUpdateFromGateway) apply(c *CurrentState) error {
 	gid := GatewayID{
 		ExternalGatewayID: gu.ExternalID,
 	}
@@ -147,7 +147,7 @@ type deviceUpdateFromGateway struct {
 	Features     []*featureUpdateFromGateway
 }
 
-func (du *deviceUpdateFromGateway) validate(c *Current, externalGatewayID string) error {
+func (du *deviceUpdateFromGateway) validate(c *CurrentState, externalGatewayID string) error {
 	// validate ExternalID must be non-empty
 	if du.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on device")
@@ -170,7 +170,7 @@ func (du *deviceUpdateFromGateway) validate(c *Current, externalGatewayID string
 	return nil
 }
 
-func (du *deviceUpdateFromGateway) apply(c *Current, externalGatewayID string) {
+func (du *deviceUpdateFromGateway) apply(c *CurrentState, externalGatewayID string) {
 	did := DeviceID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  du.ExternalID,
@@ -212,7 +212,7 @@ type featureUpdateFromGateway struct {
 	// ...
 }
 
-func (fu *featureUpdateFromGateway) validate(c *Current) error {
+func (fu *featureUpdateFromGateway) validate(c *CurrentState) error {
 	// valdidate ExternalID must be non-empty
 	if fu.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on feature")
@@ -228,7 +228,7 @@ func (fu *featureUpdateFromGateway) validate(c *Current) error {
 	return nil
 }
 
-func (fu *featureUpdateFromGateway) apply(c *Current, externalGatewayID string, externalDeviceID string) {
+func (fu *featureUpdateFromGateway) apply(c *CurrentState, externalGatewayID string, externalDeviceID string) {
 	fid := FeatureID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  externalDeviceID,
