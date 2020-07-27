@@ -1,13 +1,12 @@
 package state
 
 import (
-	"fmt"
 	"sync"
-	"time"
 )
 
 // State ...
 // TODO: Rename-- tilde? db?
+// TODO: Locks!
 type State struct {
 	sync.RWMutex
 	config  config
@@ -27,177 +26,102 @@ func NewState() State {
 
 // GatewayAuths ...
 func (s *State) GatewayAuths() []GatewayAuth {
-	auths := []GatewayAuth{}
-	for _, v := range s.auths.Gateways {
-		auths = append(auths, *v)
+	gas := []GatewayAuth{}
+	for _, gap := range s.auths.Gateways.all() {
+		gas = append(gas, *gap)
 	}
-	return auths
+	return gas
 }
 
 // GatewayAuth ...
 func (s *State) GatewayAuth(id GatewayID) (GatewayAuth, error) {
-	auth, ok := s.auths.Gateways[id]
-	if !ok {
-		return *auth, fmt.Errorf("auth not found")
-	}
-	return *auth, nil
+	gap, err := s.auths.Gateways.get(id)
+	return *gap, err
 }
 
 // NewGatewayAuth ...
 func (s *State) NewGatewayAuth(id GatewayID, username string, password string) (GatewayAuth, error) {
-	if _, exists := s.auths.Gateways[id]; exists {
-		return GatewayAuth{}, fmt.Errorf("auth id already exists")
-	}
-	s.auths.Gateways[id] = &GatewayAuth{
-		ID:           id,
-		Username:     username,
-		passwordHash: hashPassword(password),
-	}
-	return *s.auths.Gateways[id], nil
+	gap, err := s.auths.Gateways.create(id, username, password)
+	return *gap, err
 }
 
 // DeleteGatewayAuth ...
 func (s *State) DeleteGatewayAuth(id GatewayID) {
-	delete(s.auths.Gateways, id)
+	s.auths.Gateways.delete(id)
 }
 
 // GatewayOTPs ...
 func (s *State) GatewayOTPs() []GatewayOTP {
-	otps := []GatewayOTP{}
-	for _, v := range s.auths.GatewayOTPs {
-		otps = append(otps, *v)
+	gos := []GatewayOTP{}
+	for _, gop := range s.auths.GatewayOTPs.all() {
+		gos = append(gos, *gop)
 	}
-	return otps
+	return gos
 }
 
 // GatewayOTP ...
 func (s *State) GatewayOTP(id GatewayID) (GatewayOTP, error) {
-	auth, ok := s.auths.GatewayOTPs[id]
-	if !ok {
-		return *auth, fmt.Errorf("auth not found")
-	}
-	return *auth, nil
+	gop, err := s.auths.GatewayOTPs.get(id)
+	return *gop, err
 }
 
 // NewGatewayOTP ...
-func (s *State) NewGatewayOTP(id GatewayID, username string, password string, expiratonDuration time.Time) (GatewayOTP, error) {
-	if _, exists := s.auths.GatewayOTPs[id]; exists {
-		return GatewayOTP{}, fmt.Errorf("auth id already exists")
-	}
-	s.auths.GatewayOTPs[id] = &GatewayOTP{
-		ID:           id,
-		Username:     username,
-		passwordHash: hashPassword(password),
-		Expires:      expiratonDuration,
-	}
-	return *s.auths.GatewayOTPs[id], nil
+func (s *State) NewGatewayOTP(id GatewayID, username string, password string) (GatewayOTP, error) {
+	gop, err := s.auths.GatewayOTPs.create(id, username, password, s.config.GatewayOTPExpirationSeconds)
+	return *gop, err
 }
 
 // DeleteGatewayOTP ...
 func (s *State) DeleteGatewayOTP(id GatewayID) {
-	delete(s.auths.GatewayOTPs, id)
+	s.auths.GatewayOTPs.delete(id)
 }
 
 // UserAuths ...
 func (s *State) UserAuths() []UserAuth {
-	auths := []UserAuth{}
-	for _, v := range s.auths.Users {
-		auths = append(auths, *v)
+	uas := []UserAuth{}
+	for _, uap := range s.auths.Users.all() {
+		uas = append(uas, *uap)
 	}
-	return auths
+	return uas
 }
 
 // UserAuth ...
 func (s *State) UserAuth(id UserID) (UserAuth, error) {
-	auth, ok := s.auths.Users[id]
-	if !ok {
-		return *auth, fmt.Errorf("auth not found")
-	}
-	return *auth, nil
+	uap, err := s.auths.Users.get(id)
+	return *uap, err
 }
 
 // NewUserAuth ...
 func (s *State) NewUserAuth(id UserID, username string, password string) (UserAuth, error) {
-	if _, exists := s.auths.Users[id]; exists {
-		return UserAuth{}, fmt.Errorf("auth id already exists")
-	}
-	s.auths.Users[id] = &UserAuth{
-		ID:           id,
-		Username:     username,
-		passwordHash: hashPassword(password),
-	}
-	return *s.auths.Users[id], nil
+	uap, err := s.auths.Users.create(id, username, password)
+	return *uap, err
 }
 
 // UpdateUserAuthPassword ...
-func (s *State) UpdateUserAuthPassword(id UserID, newPassword string) error {
-	auth, ok := s.auths.Users[id]
-	if !ok {
-		return fmt.Errorf("auth not found")
+func (s *State) UpdateUserAuthPassword(id UserID, password string) error {
+	uap, err := s.auths.Users.get(id)
+	if err != nil {
+		return err
 	}
-	auth.passwordHash = hashPassword(newPassword)
+	uap.setPassword(password)
 	return nil
 }
 
 // DeleteUserAuth ...
 func (s *State) DeleteUserAuth(id UserID) {
-	delete(s.auths.Users, id)
+	s.auths.Users.delete(id)
 }
 
 type config struct {
 	GatewayOTPExpirationSeconds int
 }
 
-type auths struct {
-	Gateways    map[GatewayID]*GatewayAuth
-	GatewayOTPs map[GatewayID]*GatewayOTP
-	Users       map[UserID]*UserAuth
-}
-
-// newAuth is used to avoid nil pointer problems
-func newAuths() auths {
-	return auths{
-		Gateways:    make(map[GatewayID]*GatewayAuth),
-		GatewayOTPs: make(map[GatewayID]*GatewayOTP),
-	}
-}
-
-// TODO:
-// - add non-exported functions to create new GatewayAuth/GatewayOTP
-// - add exported methods to State that allow for addition of new
-//   GatewayAuth/GatewayOTP with validation of relationships. Don't forget
-//   locks!
-
-// GatewayAuth ...
-type GatewayAuth struct {
-	ID           GatewayID
-	Username     string
-	passwordHash string
-}
-
-// GatewayOTP ...
-type GatewayOTP struct {
-	ID           GatewayID
-	Username     string
-	passwordHash string
-	Expires      time.Time
-}
-
-// UserAuth ...
-type UserAuth struct {
-	ID           UserID
-	Username     string
-	passwordHash string
-}
-
-// currentState ...
 type currentState struct {
 	Gateways map[GatewayID]*Gateway
 	Devices  map[DeviceID]*Device
 	Features map[FeatureID]*Feature
 }
 
-// newCurrentState is used to avoid nil pointer problems
 func newCurrentState() currentState {
 	return currentState{
 		Devices:  make(map[DeviceID]*Device),
@@ -316,10 +240,4 @@ func (s *State) ApplyUpdateFromGateway(u UpdateFromGateway) error {
 	}
 
 	return nil
-}
-
-func hashPassword(password string) string {
-	// TODO: actually hash
-	hash := password
-	return hash
 }

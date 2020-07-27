@@ -6,22 +6,33 @@ import (
 )
 
 // Persist ...
+// TODO: open and write to copies, then move
 func (s *State) Persist(path string) error {
 	// open the files for writing and defer close
-	f, err := os.Create(path + "/current.gob")
+	af, err := os.Create(path + "/auths.gob")
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer af.Close()
+
+	cf, err := os.Create(path + "/current.gob")
+	if err != nil {
+		return err
+	}
+	defer cf.Close()
 
 	// lock the state and defer unlock
 	s.Lock()
 	defer s.Unlock()
 
 	// encode and write to the file
-	// enc := json.NewEncoder(f)
-	enc := gob.NewEncoder(f) // I ❤️ Go! What an easy change!
-	if err := enc.Encode(&s.current); err != nil {
+	afEnc := gob.NewEncoder(af)
+	if err := afEnc.Encode(&s.current); err != nil {
+		return err
+	}
+
+	cfEnc := gob.NewEncoder(cf)
+	if err := cfEnc.Encode(&s.current); err != nil {
 		return err
 	}
 
@@ -30,12 +41,18 @@ func (s *State) Persist(path string) error {
 
 // Restore ...
 func (s *State) Restore(path string) error {
-	// open the file for reading and defer close
-	f, err := os.Open(path + "/current.gob")
+	// open the files for reading and defer close
+	af, err := os.Open(path + "/auths.gob")
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer af.Close()
+
+	cf, err := os.Open(path + "/current.gob")
+	if err != nil {
+		return err
+	}
+	defer cf.Close()
 
 	// lock the state and defer unlock
 	s.Lock()
@@ -43,8 +60,13 @@ func (s *State) Restore(path string) error {
 
 	// decode into the state
 	// dec := json.NewDecoder(f)
-	dec := gob.NewDecoder(f) // I ❤️ Go! What an easy change!
-	if err := dec.Decode(&s.current); err != nil {
+	afDec := gob.NewDecoder(af) // I ❤️ Go! What an easy change!
+	if err := afDec.Decode(&s.auths); err != nil {
+		return err
+	}
+
+	cfDec := gob.NewDecoder(cf) // I ❤️ Go! What an easy change!
+	if err := cfDec.Decode(&s.current); err != nil {
 		return err
 	}
 
