@@ -26,13 +26,20 @@ func NewUpdateFromGateway(auth GatewayAuth, updateJSONBytes []byte) (UpdateFromG
 	return u, nil
 }
 
-func (u *UpdateFromGateway) validate(c *CurrentState) error {
-	// validate authorization (not authentication!) and that gateway is only
-	// updating itself (and inherently its own devices due to id construction)
+func (u *UpdateFromGateway) authenticate(c *currentState) error {
+	// validate authentication
+	// TODO! ...
+
+	// validate authorization. A gateway may only update itself (and inherently
+	// its own devices due to id construction)
 	if u.auth.ID.ExternalGatewayID != u.data.Gateway.ExternalID {
-		return fmt.Errorf("gateway attempting to update other than iteself")
+		return fmt.Errorf("not authorized: gateway attempting to update other than iteself")
 	}
 
+	return nil
+}
+
+func (u *UpdateFromGateway) validate(c *currentState) error {
 	// validate gateway and its features
 	if err := u.data.Gateway.validate(c); err != nil {
 		return err
@@ -52,7 +59,7 @@ func (u *UpdateFromGateway) validate(c *CurrentState) error {
 	return nil
 }
 
-func (u *UpdateFromGateway) apply(c *CurrentState) error {
+func (u *UpdateFromGateway) apply(c *currentState) error {
 	// is this validated?
 	if !u.validated {
 		return fmt.Errorf("update not validated before applying")
@@ -81,12 +88,7 @@ type gatewayUpdateFromGateway struct {
 	Features     []*featureUpdateFromGateway
 }
 
-func (gu *gatewayUpdateFromGateway) validate(c *CurrentState) error {
-	// validate gateway must already exist
-	if _, ok := c.Gateways[GatewayID{ExternalGatewayID: gu.ExternalID}]; !ok {
-		return fmt.Errorf("gateway does not exist: %s", gu.ExternalID)
-	}
-
+func (gu *gatewayUpdateFromGateway) validate(c *currentState) error {
 	// we are receiving an update, so mark as active unless spcified otherwise
 	// in update
 	if gu.Active == nil {
@@ -104,15 +106,16 @@ func (gu *gatewayUpdateFromGateway) validate(c *CurrentState) error {
 	return nil
 }
 
-func (gu *gatewayUpdateFromGateway) apply(c *CurrentState) error {
+func (gu *gatewayUpdateFromGateway) apply(c *currentState) error {
 	gid := GatewayID{
 		ExternalGatewayID: gu.ExternalID,
 	}
 
-	// validate that gateway already exists
+	// get a refernce to the device if we already have it, or create a new one
 	g, ok := c.Gateways[gid]
 	if !ok {
-		return fmt.Errorf("gateway not found during update (this shouldn't happen becaue we validated!)")
+		c.Gateways[gid] = new(Gateway)
+		c.Gateways[gid].ID = gid
 	}
 
 	// update fields on our gateway
@@ -147,7 +150,7 @@ type deviceUpdateFromGateway struct {
 	Features     []*featureUpdateFromGateway
 }
 
-func (du *deviceUpdateFromGateway) validate(c *CurrentState, externalGatewayID string) error {
+func (du *deviceUpdateFromGateway) validate(c *currentState, externalGatewayID string) error {
 	// validate ExternalID must be non-empty
 	if du.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on device")
@@ -170,7 +173,7 @@ func (du *deviceUpdateFromGateway) validate(c *CurrentState, externalGatewayID s
 	return nil
 }
 
-func (du *deviceUpdateFromGateway) apply(c *CurrentState, externalGatewayID string) {
+func (du *deviceUpdateFromGateway) apply(c *currentState, externalGatewayID string) {
 	did := DeviceID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  du.ExternalID,
@@ -212,7 +215,7 @@ type featureUpdateFromGateway struct {
 	// ...
 }
 
-func (fu *featureUpdateFromGateway) validate(c *CurrentState) error {
+func (fu *featureUpdateFromGateway) validate(c *currentState) error {
 	// valdidate ExternalID must be non-empty
 	if fu.ExternalID == "" {
 		return fmt.Errorf("ExternalID must not be empty on feature")
@@ -228,7 +231,7 @@ func (fu *featureUpdateFromGateway) validate(c *CurrentState) error {
 	return nil
 }
 
-func (fu *featureUpdateFromGateway) apply(c *CurrentState, externalGatewayID string, externalDeviceID string) {
+func (fu *featureUpdateFromGateway) apply(c *currentState, externalGatewayID string, externalDeviceID string) {
 	fid := FeatureID{
 		ExternalGatewayID: externalGatewayID,
 		ExternalDeviceID:  externalDeviceID,
