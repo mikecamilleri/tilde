@@ -5,6 +5,33 @@ import (
 	"fmt"
 )
 
+// GatewayInterface ...
+type GatewayInterface struct {
+	state *State
+}
+
+// NewGatewayInterface ...
+func NewGatewayInterface(state *State) GatewayInterface {
+	return GatewayInterface{state: state}
+}
+
+// ApplyUpdateFromGateway ...
+func (gu *GatewayInterface) ApplyUpdateFromGateway(u UpdateFromGateway) error {
+	s := gu.state
+	s.Lock()
+	defer s.Unlock()
+
+	if err := u.validate(&s.current); err != nil {
+		return err
+	}
+
+	if err := u.apply(&s.current); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // UpdateFromGateway ...
 type UpdateFromGateway struct {
 	validated bool
@@ -13,6 +40,8 @@ type UpdateFromGateway struct {
 		Gateway *gatewayUpdateFromGateway
 	}
 }
+
+// TODO: Locks and consider making methods of UI
 
 // NewUpdateFromGateway unmarshals the JSON update from the gateway into an
 // UpdateFromGateway struct. Extra fields are ignored.
